@@ -5,7 +5,9 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASEProject", "ASEProject\ASEProject.csproj", "{0A7D479D-1825-483A-A5E4-F11FA7E4E159}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandListTests", "CommandListTests\CommandListTests.csproj", "{0414F3F4-1D02-4A36-9990-F792D47E11B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandListTests", "CommandListTests\CommandListTests.csproj", "{0414F3F4-1D02-4A36-9990-F792D47E11B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandParserTests", "CommandParserTests\CommandParserTests.csproj", "{38AAD580-6079-4808-91E1-6975F9C5D37B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0414F3F4-1D02-4A36-9990-F792D47E11B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0414F3F4-1D02-4A36-9990-F792D47E11B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0414F3F4-1D02-4A36-9990-F792D47E11B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38AAD580-6079-4808-91E1-6975F9C5D37B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38AAD580-6079-4808-91E1-6975F9C5D37B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38AAD580-6079-4808-91E1-6975F9C5D37B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38AAD580-6079-4808-91E1-6975F9C5D37B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
