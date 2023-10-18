@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using System.IO;
 
 namespace ASEProject
 {
@@ -71,12 +72,45 @@ namespace ASEProject
 
         private void Open_Click(object sender, EventArgs e)
         {
-            // Handle open functionality here.
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Read the selected text file and load its content into the ProgramCode text box.
+                        string fileName = openFileDialog.FileName;
+                        string fileContent = File.ReadAllText(fileName);
+                        ProgramCode.Text = fileContent;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error opening the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         private void Save_Click(object sender, EventArgs e)
         {
-            // Handle save functionality here.
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Get the selected file name and save the content from the ProgramCode text box.
+                        string fileName = saveFileDialog.FileName;
+                        File.WriteAllText(fileName, ProgramCode.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error saving the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
     }
 }
