@@ -2,13 +2,24 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+/// <summary>
+/// Represents a class for executing a list of drawing commands using a Graphics object and a Pen.
+/// </summary>
 public class CommandList
 {
     private Graphics graphics;
     private Pen pen;
     private PointF currentPosition;
-    internal bool fillModeOn { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the fill mode for shapes. When set to true, shapes are filled; when set to false, only outlines are drawn.
+    /// </summary>
+    internal bool FillModeOn { get; set; } = true;
+
+    /// <summary>
+    /// Initializes a new instance of the CommandList class with the specified Graphics object.
+    /// </summary>
+    /// <param name="graphics">The Graphics object to use for drawing.</param>
     public CommandList(Graphics graphics)
     {
         this.graphics = graphics;
@@ -16,10 +27,18 @@ public class CommandList
         currentPosition = PointF.Empty;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the CommandList class without a Graphics object.
+    /// </summary>
     public CommandList()
     {
+        // You can add any initialization logic here if needed.
     }
 
+    /// <summary>
+    /// Executes the specified drawing command.
+    /// </summary>
+    /// <param name="command">A string representing the drawing command to execute.</param>
     public void ExecuteCommand(string command)
     {
         string[] parts = command.Split(' ');
@@ -66,6 +85,10 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Moves the drawing cursor to the specified coordinates.
+    /// </summary>
+    /// <param name="parts">An array containing the "moveto" command and X, Y coordinates.</param>
     private void MoveTo(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y))
@@ -74,6 +97,10 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Draws a line from the current position to the specified coordinates.
+    /// </summary>
+    /// <param name="parts">An array containing the "drawto" command and X, Y coordinates.</param>
     private void DrawTo(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y))
@@ -84,23 +111,33 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Clears the drawing area and resets the current position to the origin (0,0).
+    /// </summary>
     public void Clear()
     {
         graphics.Clear(Color.White);
         currentPosition = PointF.Empty;
     }
 
+    /// <summary>
+    /// Resets the current position to the origin (0,0).
+    /// </summary>
     public void Reset()
     {
         currentPosition = PointF.Empty;
     }
 
+    /// <summary>
+    /// Draws a rectangle at the current position with the specified width and height.
+    /// </summary>
+    /// <param name="parts">An array containing the "rectangle" command and the width and height of the rectangle.</param>
     private void DrawRectangle(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int width) && int.TryParse(parts[2], out int height))
         {
             RectangleF rect = new RectangleF(currentPosition.X, currentPosition.Y, width, height);
-            if (fillModeOn)
+            if (FillModeOn)
             {
                 if (pen.Brush != null && pen.Brush != Brushes.Transparent)
                 {
@@ -111,13 +148,17 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Draws a circle at the current position with the specified radius.
+    /// </summary>
+    /// <param name="parts">An array containing the "circle" command and the radius of the circle.</param>
     private void DrawCircle(string[] parts)
     {
         if (parts.Length >= 2 && int.TryParse(parts[1], out int radius))
         {
             float diameter = radius * 2;
             RectangleF rect = new RectangleF(currentPosition.X, currentPosition.Y, diameter, diameter);
-            if (fillModeOn)
+            if (FillModeOn)
             {
                 if (pen.Brush != null && pen.Brush != Brushes.Transparent)
                 {
@@ -128,7 +169,11 @@ public class CommandList
         }
     }
 
-    public void DrawTriangle(string[] parts)
+    /// <summary>
+    /// Draws a triangle at the current position with specified dimensions.
+    /// </summary>
+    /// <param name="parts">An array containing the "triangle" command and the width, height, and coordinates of the triangle.</param>
+    private void DrawTriangle(string[] parts)
     {
         if (parts.Length >= 6 && int.TryParse(parts[1], out int width) && int.TryParse(parts[2], out int height)
             && int.TryParse(parts[3], out int x2) && int.TryParse(parts[4], out int y2))
@@ -143,7 +188,7 @@ public class CommandList
                 new PointF(x2 - width / 2, y1)
             };
 
-            if (fillModeOn)
+            if (FillModeOn)
             {
                 if (pen.Brush != null && pen.Brush != Brushes.Transparent)
                 {
@@ -154,6 +199,10 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Changes the color of the drawing pen based on the specified color name.
+    /// </summary>
+    /// <param name="parts">An array containing the "pen" command and the color name (e.g., "red", "green", "blue", "black").</param>
     private void ChangePenColor(string[] parts)
     {
         if (parts.Length >= 2)
@@ -180,6 +229,10 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Changes the fill mode for shapes (on or off) based on the specified fill mode.
+    /// </summary>
+    /// <param name="parts">An array containing the "fill" command and the fill mode ("on" or "off").</param>
     private void ChangeFillMode(string[] parts)
     {
         if (parts.Length >= 2)
@@ -190,11 +243,11 @@ public class CommandList
             {
                 if (fillMode == "on")
                 {
-                    fillModeOn = true;
+                    FillModeOn = true;
                 }
                 else if (fillMode == "off")
                 {
-                    fillModeOn = false;
+                    FillModeOn = false;
                 }
             }
             catch (ArgumentNullException ex)
@@ -204,6 +257,10 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Gets the current drawing position.
+    /// </summary>
+    /// <returns>The current drawing position as a PointF object.</returns>
     public PointF GetCurrentPosition()
     {
         return currentPosition;

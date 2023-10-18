@@ -4,10 +4,18 @@ using Xunit;
 using ASEProject; // Replace "YourNamespace" with the actual namespace of the CommandList class
 using System.Reflection;
 
+/// <summary>
+/// This XML documentation provides detailed information about the CommandListTests class, 
+/// which contains a set of unit tests for the CommandList class in the ASEProject namespace.
+/// </summary>
+
 namespace CommandListTests
 {
     public class CommandListTests
     {
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles the "moveto" command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_ValidMoveTo()
         {
@@ -22,6 +30,9 @@ namespace CommandListTests
             Assert.Equal(new PointF(100, 100), commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles the "drawto" command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_ValidDrawTo()
         {
@@ -37,6 +48,9 @@ namespace CommandListTests
             Assert.Equal(new PointF(100, 100), commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles the "clear" command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_Clear()
         {
@@ -52,6 +66,9 @@ namespace CommandListTests
             Assert.Equal(PointF.Empty, commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles the "reset" command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_Reset()
         {
@@ -67,6 +84,9 @@ namespace CommandListTests
             Assert.Equal(PointF.Empty, commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles the "rectangle" command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_ValidRectangle()
         {
@@ -82,6 +102,9 @@ namespace CommandListTests
             Assert.NotEqual(PointF.Empty, commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles the "circle" command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_ValidCircle()
         {
@@ -97,6 +120,9 @@ namespace CommandListTests
             Assert.NotEqual(PointF.Empty, commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles the "triangle" command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_ValidTriangle()
         {
@@ -112,6 +138,9 @@ namespace CommandListTests
             Assert.NotEqual(PointF.Empty, commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ExecuteCommand method correctly handles an invalid command.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_InvalidCommand()
         {
@@ -126,6 +155,9 @@ namespace CommandListTests
             Assert.Equal(PointF.Empty, commandList.GetCurrentPosition());
         }
 
+        /// <summary>
+        /// Verifies that the ChangeFillMode method correctly turns the fill mode on.
+        /// </summary>
         [Fact]
         public void ChangeFillMode_FillOn()
         {
@@ -144,6 +176,9 @@ namespace CommandListTests
             Assert.True(fillModeOnValue);
         }
 
+        /// <summary>
+        /// Verifies that the ChangeFillMode method correctly turns the fill mode off.
+        /// </summary>
         [Fact]
         public void ChangeFillMode_FillOff()
         {
