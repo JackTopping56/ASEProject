@@ -1,34 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
 using System.Drawing;
-using System.Windows.Forms;
-
-
-/// <summary>
-/// Represents a command list for drawing shapes using <see cref="System.Drawing.Graphics"/>.
-/// </summary>
 
 public class CommandList
 {
     private Graphics graphics;
     private Pen pen;
     private PointF currentPosition;
-    private bool fillModeOn = true; // Initialize fill mode to "on"
+    internal bool fillModeOn { get; set; } = true;
 
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommandList"/> class with the specified <see cref="System.Drawing.Graphics"/>.
-    /// </summary>
-    /// <param name="graphics">The <see cref="System.Drawing.Graphics"/> object to draw on.</param>
     public CommandList(Graphics graphics)
     {
         this.graphics = graphics;
-        pen = new Pen(Color.Black); // Default pen color
+        pen = new Pen(Color.Black);
         currentPosition = PointF.Empty;
     }
 
@@ -36,10 +20,6 @@ public class CommandList
     {
     }
 
-    /// <summary>
-    /// Executes a drawing command.
-    /// </summary>
-    /// <param name="command">The command to execute.</param>
     public void ExecuteCommand(string command)
     {
         string[] parts = command.Split(' ');
@@ -86,10 +66,6 @@ public class CommandList
         }
     }
 
-    /// <summary>
-    /// Moves the current position to the specified coordinates.
-    /// </summary>
-    /// <param name="parts">An array of command parts containing X and Y coordinates.</param>
     private void MoveTo(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y))
@@ -98,10 +74,6 @@ public class CommandList
         }
     }
 
-    /// <summary>
-    /// Draws a line from the current position to the specified coordinates.
-    /// </summary>
-    /// <param name="parts">An array of command parts containing X and Y coordinates.</param>
     private void DrawTo(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y))
@@ -112,28 +84,17 @@ public class CommandList
         }
     }
 
-    /// <summary>
-    /// Clears the graphics and resets the current position.
-    /// </summary>
     public void Clear()
     {
-        Console.WriteLine("Clear method called"); // Debug output
         graphics.Clear(Color.White);
         currentPosition = PointF.Empty;
     }
 
-    /// <summary>
-    /// Resets the current position to (0, 0).
-    /// </summary>
     public void Reset()
     {
         currentPosition = PointF.Empty;
     }
 
-    /// <summary>
-    /// Draws a rectangle with the specified width and height from the current position.
-    /// </summary>
-    /// <param name="parts">An array of command parts containing width and height.</param>
     private void DrawRectangle(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int width) && int.TryParse(parts[2], out int height))
@@ -150,10 +111,6 @@ public class CommandList
         }
     }
 
-    /// <summary>
-    /// Draws a circle with the specified radius from the current position.
-    /// </summary>
-    /// <param name="parts">An array of command parts containing the radius.</param>
     private void DrawCircle(string[] parts)
     {
         if (parts.Length >= 2 && int.TryParse(parts[1], out int radius))
@@ -171,41 +128,32 @@ public class CommandList
         }
     }
 
-    /// <summary>
-    /// Draws a triangle with the specified coordinates.
-    /// </summary>
-    /// <param name="parts">An array of command parts containing X and Y coordinates for the triangle's vertices.</param>
     public void DrawTriangle(string[] parts)
     {
         if (parts.Length >= 6 && int.TryParse(parts[1], out int width) && int.TryParse(parts[2], out int height)
             && int.TryParse(parts[3], out int x2) && int.TryParse(parts[4], out int y2))
         {
-            int x1 = x2 - width; // Calculate the x-coordinate of the top-left corner
-            int y1 = y2 - height; // Calculate the y-coordinate of the top-left corner
+            int x1 = x2 - width;
+            int y1 = y2 - height;
 
             PointF[] trianglePoints = new PointF[]
             {
-            new PointF(x1, y2), // Top-left corner
-            new PointF(x2, y2), // Top-right corner
-            new PointF(x2 - width / 2, y1) // Bottom corner
+                new PointF(x1, y2),
+                new PointF(x2, y2),
+                new PointF(x2 - width / 2, y1)
             };
 
             if (fillModeOn)
             {
                 if (pen.Brush != null && pen.Brush != Brushes.Transparent)
                 {
-                    graphics.FillPolygon(pen.Brush, trianglePoints); // Fill the triangle
+                    graphics.FillPolygon(pen.Brush, trianglePoints);
                 }
             }
-            graphics.DrawPolygon(pen, trianglePoints); // Draw the outline
+            graphics.DrawPolygon(pen, trianglePoints);
         }
     }
 
-
-    /// <summary>
-    /// Changes the pen color.
-    /// </summary>
-    /// <param name="parts">An array of command parts containing the new color name.</param>
     private void ChangePenColor(string[] parts)
     {
         if (parts.Length >= 2)
@@ -232,10 +180,6 @@ public class CommandList
         }
     }
 
-    /// <summary>
-    /// Changes the fill mode to "on" or "off."
-    /// </summary>
-    /// <param name="parts">An array of command parts containing the fill mode ("on" or "off").</param>
     private void ChangeFillMode(string[] parts)
     {
         if (parts.Length >= 2)
@@ -246,23 +190,22 @@ public class CommandList
             {
                 if (fillMode == "on")
                 {
-                    fillModeOn = true; // Set fill mode to "on"
+                    fillModeOn = true;
                 }
                 else if (fillMode == "off")
                 {
-                    fillModeOn = false; // Set fill mode to "off"
+                    fillModeOn = false;
                 }
             }
             catch (ArgumentNullException ex)
             {
-                // Handle the exception, e.g., log it or show an error message
                 Console.WriteLine($"Error in ChangeFillMode: {ex.Message}");
             }
         }
     }
 
-    public IEnumerable<object> GetCurrentPosition()
+    public PointF GetCurrentPosition()
     {
-        throw new NotImplementedException();
+        return currentPosition;
     }
 }
