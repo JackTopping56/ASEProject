@@ -66,6 +66,7 @@
             btnRun.TabIndex = 2;
             btnRun.Text = "Run";
             btnRun.UseVisualStyleBackColor = true;
+            btnRun.Click += btnRun_Click;
             // 
             // btnSyntax
             // 
@@ -78,6 +79,7 @@
             // 
             // ProgramCode
             // 
+            ProgramCode.AcceptsReturn = true;
             ProgramCode.Location = new Point(12, 65);
             ProgramCode.Multiline = true;
             ProgramCode.Name = "ProgramCode";
