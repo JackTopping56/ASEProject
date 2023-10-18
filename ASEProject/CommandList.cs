@@ -177,20 +177,30 @@ public class CommandList
     /// <param name="parts">An array of command parts containing X and Y coordinates for the triangle's vertices.</param>
     public void DrawTriangle(string[] parts)
     {
-        if (parts.Length >= 6 && int.TryParse(parts[1], out int x1) && int.TryParse(parts[2], out int y1)
-            && int.TryParse(parts[3], out int x2) && int.TryParse(parts[4], out int y2)
-            && int.TryParse(parts[5], out int x3) && int.TryParse(parts[6], out int y3))
+        if (parts.Length >= 6 && int.TryParse(parts[1], out int width) && int.TryParse(parts[2], out int height)
+            && int.TryParse(parts[3], out int x2) && int.TryParse(parts[4], out int y2))
         {
+            int x1 = x2 - width; // Calculate the x-coordinate of the top-left corner
+            int y1 = y2 - height; // Calculate the y-coordinate of the top-left corner
+
             PointF[] trianglePoints = new PointF[]
             {
-                new PointF(x1, y1),
-                new PointF(x2, y2),
-                new PointF(x3, y3)
+            new PointF(x1, y2), // Top-left corner
+            new PointF(x2, y2), // Top-right corner
+            new PointF(x2 - width / 2, y1) // Bottom corner
             };
 
-            graphics.DrawPolygon(pen, trianglePoints);
+            if (fillModeOn)
+            {
+                if (pen.Brush != null && pen.Brush != Brushes.Transparent)
+                {
+                    graphics.FillPolygon(pen.Brush, trianglePoints); // Fill the triangle
+                }
+            }
+            graphics.DrawPolygon(pen, trianglePoints); // Draw the outline
         }
     }
+
 
     /// <summary>
     /// Changes the pen color.
@@ -256,30 +266,3 @@ public class CommandList
         throw new NotImplementedException();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

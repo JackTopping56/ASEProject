@@ -1,9 +1,12 @@
+using System;
+using System.Windows.Forms;
+
 namespace ASEProject
 {
     public partial class Form1 : Form
     {
-
         private CommandList commandList;
+
         public Form1()
         {
             InitializeComponent();
@@ -54,18 +57,26 @@ namespace ASEProject
 
         private void btnRun_Click(object sender, EventArgs e)
         {
-            ExecuteCommandFromTextBox(ProgramCode.Text);
-        }
+            Console.WriteLine("Run button clicked");
+            // Get the text from the ProgramCode text box.
+            string programCode = ProgramCode.Text;
 
+            // Execute commands from the ProgramCode text box.
+            string[] lines = programCode.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                ExecuteCommandFromTextBox(line);
+            }
+        }
 
         private void Open_Click(object sender, EventArgs e)
         {
-
+            // Handle open functionality here.
         }
 
         private void Save_Click(object sender, EventArgs e)
         {
-
+            // Handle save functionality here.
         }
     }
 }
