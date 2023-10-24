@@ -116,7 +116,7 @@ public class CommandList
     /// </summary>
     public void Clear()
     {
-        graphics.Clear(Color.White);
+        graphics.Clear(Color.DarkGray);
         currentPosition = PointF.Empty;
     }
 
@@ -132,7 +132,7 @@ public class CommandList
     /// Draws a rectangle at the current position with the specified width and height.
     /// </summary>
     /// <param name="parts">An array containing the "rectangle" command and the width and height of the rectangle.</param>
-    private void DrawRectangle(string[] parts)
+    public void DrawRectangle(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int width) && int.TryParse(parts[2], out int height))
         {
@@ -173,7 +173,7 @@ public class CommandList
     /// Draws a triangle at the current position with specified dimensions.
     /// </summary>
     /// <param name="parts">An array containing the "triangle" command and the width, height, and coordinates of the triangle.</param>
-    private void DrawTriangle(string[] parts)
+    public void DrawTriangle(string[] parts)
     {
         if (parts.Length >= 6 && int.TryParse(parts[1], out int width) && int.TryParse(parts[2], out int height)
             && int.TryParse(parts[3], out int x2) && int.TryParse(parts[4], out int y2))
