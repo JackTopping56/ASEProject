@@ -89,7 +89,7 @@ public class CommandList
     /// Moves the drawing cursor to the specified coordinates.
     /// </summary>
     /// <param name="parts">An array containing the "moveto" command and X, Y coordinates.</param>
-    private void MoveTo(string[] parts)
+    public void MoveTo(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y))
         {
@@ -101,7 +101,7 @@ public class CommandList
     /// Draws a line from the current position to the specified coordinates.
     /// </summary>
     /// <param name="parts">An array containing the "drawto" command and X, Y coordinates.</param>
-    private void DrawTo(string[] parts)
+    public void DrawTo(string[] parts)
     {
         if (parts.Length >= 3 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y))
         {
@@ -152,7 +152,7 @@ public class CommandList
     /// Draws a circle at the current position with the specified radius.
     /// </summary>
     /// <param name="parts">An array containing the "circle" command and the radius of the circle.</param>
-    private void DrawCircle(string[] parts)
+    public void DrawCircle(string[] parts)
     {
         if (parts.Length >= 2 && int.TryParse(parts[1], out int radius))
         {
@@ -203,7 +203,7 @@ public class CommandList
     /// Changes the color of the drawing pen based on the specified color name.
     /// </summary>
     /// <param name="parts">An array containing the "pen" command and the color name (e.g., "red", "green", "blue", "black").</param>
-    private void ChangePenColor(string[] parts)
+    public void ChangePenColor(string[] parts)
     {
         if (parts.Length >= 2)
         {
@@ -233,7 +233,7 @@ public class CommandList
     /// Changes the fill mode for shapes (on or off) based on the specified fill mode.
     /// </summary>
     /// <param name="parts">An array containing the "fill" command and the fill mode ("on" or "off").</param>
-    private void ChangeFillMode(string[] parts)
+    public void ChangeFillMode(string[] parts)
     {
         if (parts.Length >= 2)
         {

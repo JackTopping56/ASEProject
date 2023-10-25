@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections.Generic;
 
 namespace ASEProject
 {
@@ -8,14 +9,31 @@ namespace ASEProject
     {
         private CommandList commandList;
         private CommandParser commandParser;
+        private Dictionary<string, ICommand> commandDictionary;
 
         public Form1()
         {
             InitializeComponent();
             commandList = new CommandList(GraphicsBox.CreateGraphics());
             commandParser = new CommandParser();
-
+            InitializeCommandDictionary();
             CommandBox.KeyPress += CommandBox_KeyPress;
+        }
+
+        private void InitializeCommandDictionary()
+        {
+            commandDictionary = new Dictionary<string, ICommand>
+            {
+                {"moveto", new MoveToCommand()},
+                {"drawto", new DrawToCommand()},
+                {"clear", new ClearCommand()},
+                {"reset", new ResetCommand()},
+                {"rectangle", new DrawRectangleCommand()},
+                {"circle", new DrawCircleCommand()},
+                {"triangle", new DrawTriangleCommand()},
+                {"pen", new ChangePenColorCommand()},
+                {"fill", new ChangeFillModeCommand()}
+            };
         }
 
         private void CommandBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -38,24 +56,17 @@ namespace ASEProject
 
                 if (commandParser.IsValidCommand(trimmedCommand) && commandParser.HasValidParameters(trimmedCommand))
                 {
-                    if (string.Equals(trimmedCommand, "clear", StringComparison.OrdinalIgnoreCase))
+                    string[] parts = trimmedCommand.Split(' ');
+                    string commandName = parts[0].ToLower();
+
+                    if (commandDictionary.ContainsKey(commandName))
                     {
-                        commandList.Clear();
-                        Console.WriteLine("Clear command executed.");
-                    }
-                    else if (string.Equals(trimmedCommand, "reset", StringComparison.OrdinalIgnoreCase))
-                    {
-                        commandList.Reset();
-                        Console.WriteLine("Reset command executed.");
-                    }
-                    else if (trimmedCommand.StartsWith("triangle", StringComparison.OrdinalIgnoreCase))
-                    {
-                        commandList.DrawTriangle(trimmedCommand.Split(' '));
-                        Console.WriteLine("Triangle command executed.");
+                        commandDictionary[commandName].Execute(commandList, parts);
+                        Console.WriteLine($"{trimmedCommand} command executed.");
                     }
                     else
                     {
-                        commandList.ExecuteCommand(trimmedCommand);
+                        Console.WriteLine($"Unknown command: {trimmedCommand}");
                     }
                 }
                 else
@@ -63,7 +74,6 @@ namespace ASEProject
                     Console.WriteLine($"Invalid command: {trimmedCommand}");
                 }
             }
-            CommandBox.Clear();
         }
 
         private void btnRun_Click(object sender, EventArgs e)
