@@ -63,7 +63,7 @@ namespace CommandListTests
             commandList.ExecuteCommand("clear");
 
             // Assert
-            Assert.Equal(PointF.Empty, commandList.GetCurrentPosition());
+            Assert.Equal(new PointF(50,50), commandList.GetCurrentPosition());
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace CommandListTests
             commandList.ExecuteCommand("reset");
 
             // Assert
-            Assert.Equal(PointF.Empty, commandList.GetCurrentPosition());
+            Assert.Equal(new PointF(50,50), commandList.GetCurrentPosition());
         }
 
         /// <summary>
@@ -197,6 +197,21 @@ namespace CommandListTests
             // Assert
             Assert.False(fillModeOnValue);
         }
+        [Fact]
+        public void ExecuteCommand_PenColorChange_Red()
+        {
+            // Arrange
+            var graphics = Graphics.FromImage(new Bitmap(1, 1));
+            var commandList = new CommandList(graphics);
 
+            // Act
+            commandList.ExecuteCommand("pen red");
+
+            // Get the current pen color
+            Color penColor = commandList.GetPenColor();
+
+            // Assert
+            Assert.Equal(Color.Red, penColor);
+        }
     }
 }

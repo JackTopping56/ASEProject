@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 
 /// <summary>
 /// Represents a class for executing a list of drawing commands using a Graphics object and a Pen.
@@ -32,7 +33,12 @@ public class CommandList
     /// </summary>
     public CommandList()
     {
-        
+       
+    }
+
+    public Color GetPenColor()
+    {
+        return pen.Color;
     }
 
     /// <summary>
