@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace ASEProject
 {
+    /// <summary>
+    /// Exception thrown when an invalid command is encountered.
+    /// </summary>
     public class InvalidCommandException : Exception
     {
         public InvalidCommandException() { }
@@ -11,8 +14,14 @@ namespace ASEProject
         public InvalidCommandException(string message, Exception inner) : base(message, inner) { }
     }
 
+    /// <summary>
+    /// A class responsible for parsing and validating commands in a drawing application.
+    /// </summary>
     public class CommandParser
     {
+        /// <summary>
+        /// Gets a list of valid command keywords.
+        /// </summary>
         public List<string> ValidCommands { get; } = new List<string>
         {
             "moveto",
@@ -26,6 +35,11 @@ namespace ASEProject
             "fill"
         };
 
+        /// <summary>
+        /// Validates if a command is a valid keyword.
+        /// </summary>
+        /// <param name="command">The command to validate.</param>
+        /// <returns>True if the command is a valid keyword; otherwise, false.</returns>
         public bool IsValidCommand(string command)
         {
             string[] parts = command.Split(' ');
@@ -40,15 +54,20 @@ namespace ASEProject
             return true;
         }
 
+        /// <summary>
+        /// Validates if a command has valid parameters.
+        /// </summary>
+        /// <param name="command">The command to validate.</param>
+        /// <returns>True if the command has valid parameters; otherwise, false.</returns>
         public bool HasValidParameters(string command)
         {
             string[] parts = command.Split(' ');
 
-            if (parts.Length == 1) // Check for commands without parameters
+            if (parts.Length == 1)
             {
                 string cmd = parts[0].ToLower();
                 if (cmd == "clear" || cmd == "reset")
-                    return true; // These commands don't require parameters.
+                    return true;
             }
             else if (parts.Length < 2)
             {
