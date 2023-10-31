@@ -44,8 +44,16 @@ namespace ASEProject
         {
             string[] parts = command.Split(' ');
 
-            if (parts.Length < 2)
+            if (parts.Length == 1) // Check for commands without parameters
+            {
+                string cmd = parts[0].ToLower();
+                if (cmd == "clear" || cmd == "reset")
+                    return true; // These commands don't require parameters.
+            }
+            else if (parts.Length < 2)
+            {
                 throw new InvalidCommandException("Command is missing parameters.");
+            }
 
             string action = parts[0].ToLower();
             string[] parameters = parts.Skip(1).ToArray();
@@ -59,11 +67,6 @@ namespace ASEProject
                 case "drawto":
                     if (!IsValidDrawToParameters(parameters))
                         throw new InvalidCommandException("Invalid parameters for 'drawto' command.");
-                    break;
-                case "clear":
-                case "reset":
-                    if (parameters.Length != 0)
-                        throw new InvalidCommandException("Command does not require parameters.");
                     break;
                 case "rectangle":
                     if (!IsValidRectangleParameters(parameters))

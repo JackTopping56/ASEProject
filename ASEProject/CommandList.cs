@@ -32,7 +32,7 @@ public class CommandList
     /// </summary>
     public CommandList()
     {
-        // You can add any initialization logic here if needed.
+        
     }
 
     /// <summary>
@@ -116,8 +116,12 @@ public class CommandList
     /// </summary>
     public void Clear()
     {
-        graphics.Clear(Color.DarkGray);
-        currentPosition = PointF.Empty;
+        if (graphics != null)
+        {
+           
+            graphics.Clear(Color.DarkGray);
+            currentPosition = PointF.Empty;
+        }
     }
 
     /// <summary>
