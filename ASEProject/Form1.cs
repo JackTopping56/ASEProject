@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 namespace ASEProject
 {
+    /// <summary>
+    /// Represents the main form of the drawing application.
+    /// </summary>
+
     public class CustomInvalidCommandException : Exception
     {
         public CustomInvalidCommandException() { }
@@ -18,6 +22,9 @@ namespace ASEProject
         private CommandParser commandParser;
         private Dictionary<string, ICommand> commandDictionary;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Form1"/> class.
+        /// </summary>
         public Form1()
         {
             InitializeComponent();

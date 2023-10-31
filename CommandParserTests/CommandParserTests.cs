@@ -2,8 +2,14 @@ using System;
 using Xunit;
 using ASEProject;
 
+/// <summary>
+/// Unit tests for the <see cref="CommandParser"/> class.
+/// </summary>
 public class CommandParserTests
 {
+    /// <summary>
+    /// Verifies that <see cref="CommandParser.IsValidCommand(string)"/> correctly identifies a valid command.
+    /// </summary>
     [Fact]
     public void IsValidCommand_ValidCommand_ReturnsTrue()
     {
@@ -14,23 +20,24 @@ public class CommandParserTests
         Assert.True(isValid);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="CommandParser.IsValidCommand(string)"/> correctly identifies an invalid command and throws an <see cref="InvalidCommandException"/>.
+    /// </summary>
     [Fact]
     public void IsValidCommand_InvalidCommand_ReturnsFalse()
     {
         CommandParser parser = new CommandParser();
         string invalidCommand = "invalidcommand 10 20";
 
-        try
+        Assert.Throws<InvalidCommandException>(() =>
         {
-            bool isValid = parser.IsValidCommand(invalidCommand);
-            Assert.False(isValid, "Expected the command to be invalid");
-        }
-        catch (InvalidCommandException)
-        {
-            // The exception was thrown as expected for an invalid command.
-        }
+            parser.IsValidCommand(invalidCommand);
+        });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="CommandParser.HasValidParameters(string)"/> correctly identifies valid parameters for a command.
+    /// </summary>
     [Fact]
     public void HasValidParameters_ValidParameters_ReturnsTrue()
     {
@@ -41,20 +48,18 @@ public class CommandParserTests
         Assert.True(hasValidParameters);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="CommandParser.HasValidParameters(string)"/> correctly identifies invalid parameters for a command and throws an <see cref="InvalidCommandException"/>.
+    /// </summary>
     [Fact]
     public void HasValidParameters_InvalidParameters_ReturnsFalse()
     {
         CommandParser parser = new CommandParser();
         string invalidCommand = "rectangle abc def";
 
-        try
+        Assert.Throws<InvalidCommandException>(() =>
         {
-            bool hasValidParameters = parser.HasValidParameters(invalidCommand);
-            Assert.False(hasValidParameters, "Expected the parameters to be invalid");
-        }
-        catch (InvalidCommandException)
-        {
-            // The exception was thrown as expected for invalid parameters.
-        }
+            parser.HasValidParameters(invalidCommand);
+        });
     }
 }
