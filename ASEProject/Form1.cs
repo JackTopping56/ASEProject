@@ -5,6 +5,13 @@ using System.Collections.Generic;
 
 namespace ASEProject
 {
+    public class CustomInvalidCommandException : Exception
+    {
+        public CustomInvalidCommandException() { }
+        public CustomInvalidCommandException(string message) : base(message) { }
+        public CustomInvalidCommandException(string message, Exception inner) : base(message, inner) { }
+    }
+
     public partial class Form1 : Form
     {
         private CommandList commandList;
@@ -18,6 +25,8 @@ namespace ASEProject
             commandParser = new CommandParser();
             InitializeCommandDictionary();
             CommandBox.KeyPress += CommandBox_KeyPress;
+            Open.Click += Open_Click;
+            Save.Click += Save_Click;
         }
 
         private void InitializeCommandDictionary()
@@ -41,8 +50,15 @@ namespace ASEProject
             if (e.KeyChar == (char)Keys.Enter)
             {
                 e.Handled = true;
-                ExecuteCommandFromTextBox(CommandBox.Text);
-                CommandBox.Clear();
+                try
+                {
+                    ExecuteCommandFromTextBox(CommandBox.Text);
+                    CommandBox.Clear();
+                }
+                catch (CustomInvalidCommandException ex)
+                {
+                    MessageBox.Show($"Invalid Command: {ex.Message}", "Invalid Command", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -83,7 +99,14 @@ namespace ASEProject
             string[] lines = programCode.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string line in lines)
             {
-                ExecuteCommandFromTextBox(line);
+                try
+                {
+                    ExecuteCommandFromTextBox(line);
+                }
+                catch (CustomInvalidCommandException ex)
+                {
+                    MessageBox.Show($"Invalid Command: {ex.Message}", "Invalid Command", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

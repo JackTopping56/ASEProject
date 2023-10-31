@@ -4,14 +4,15 @@ using System.Linq;
 
 namespace ASEProject
 {
-    /// <summary>
-    /// Represents a class for parsing and validating commands in a graphics drawing application.
-    /// </summary>
+    public class InvalidCommandException : Exception
+    {
+        public InvalidCommandException() { }
+        public InvalidCommandException(string message) : base(message) { }
+        public InvalidCommandException(string message, Exception inner) : base(message, inner) { }
+    }
+
     public class CommandParser
     {
-        /// <summary>
-        /// Gets a list of valid commands that can be processed by the parser.
-        /// </summary>
         public List<string> ValidCommands { get; } = new List<string>
         {
             "moveto",
@@ -25,33 +26,26 @@ namespace ASEProject
             "fill"
         };
 
-        /// <summary>
-        /// Checks if a given command is a valid command recognized by the parser.
-        /// </summary>
-        /// <param name="command">The command to validate.</param>
-        /// <returns>True if the command is valid; otherwise, false.</returns>
         public bool IsValidCommand(string command)
         {
             string[] parts = command.Split(' ');
 
             if (parts.Length == 0)
-                return false;
+                throw new InvalidCommandException("Empty command.");
 
             string action = parts[0].ToLower();
-            return ValidCommands.Contains(action);
+            if (!ValidCommands.Contains(action))
+                throw new InvalidCommandException($"Unknown command: {action}");
+
+            return true;
         }
 
-        /// <summary>
-        /// Checks if a command has valid parameters based on its action.
-        /// </summary>
-        /// <param name="command">The command to validate.</param>
-        /// <returns>True if the parameters are valid; otherwise, false.</returns>
         public bool HasValidParameters(string command)
         {
             string[] parts = command.Split(' ');
 
             if (parts.Length < 2)
-                return false;
+                throw new InvalidCommandException("Command is missing parameters.");
 
             string action = parts[0].ToLower();
             string[] parameters = parts.Skip(1).ToArray();
@@ -59,28 +53,46 @@ namespace ASEProject
             switch (action)
             {
                 case "moveto":
-                    return IsValidMoveToParameters(parameters);
+                    if (!IsValidMoveToParameters(parameters))
+                        throw new InvalidCommandException("Invalid parameters for 'moveto' command.");
+                    break;
                 case "drawto":
-                    return IsValidDrawToParameters(parameters);
+                    if (!IsValidDrawToParameters(parameters))
+                        throw new InvalidCommandException("Invalid parameters for 'drawto' command.");
+                    break;
                 case "clear":
                 case "reset":
-                    return parameters.Length == 0;
+                    if (parameters.Length != 0)
+                        throw new InvalidCommandException("Command does not require parameters.");
+                    break;
                 case "rectangle":
-                    return IsValidRectangleParameters(parameters);
+                    if (!IsValidRectangleParameters(parameters))
+                        throw new InvalidCommandException("Invalid parameters for 'rectangle' command.");
+                    break;
                 case "circle":
-                    return IsValidCircleParameters(parameters);
+                    if (!IsValidCircleParameters(parameters))
+                        throw new InvalidCommandException("Invalid parameters for 'circle' command.");
+                    break;
                 case "triangle":
-                    return IsValidTriangleParameters(parameters);
+                    if (!IsValidTriangleParameters(parameters))
+                        throw new InvalidCommandException("Invalid parameters for 'triangle' command.");
+                    break;
                 case "pen":
-                    return IsValidPenParameters(parameters);
+                    if (!IsValidPenParameters(parameters))
+                        throw new InvalidCommandException("Invalid parameters for 'pen' command.");
+                    break;
                 case "fill":
-                    return IsValidFillParameters(parameters);
+                    if (!IsValidFillParameters(parameters))
+                        throw new InvalidCommandException("Invalid parameters for 'fill' command.");
+                    break;
                 default:
-                    return false;
+                    throw new InvalidCommandException($"Unknown command: {action}");
             }
+
+            return true;
         }
 
-        // Other private helper methods for parameter validation...
+        // Helper methods for specific command parameter validation...
 
         private bool IsValidMoveToParameters(string[] parameters)
         {
@@ -116,7 +128,7 @@ namespace ASEProject
 
         private bool IsValidTriangleParameters(string[] parameters)
         {
-            if (parameters.Length != 4)
+            if (parameters.Length != 6)
                 return false;
 
             return parameters.All(param => int.TryParse(param, out _));
