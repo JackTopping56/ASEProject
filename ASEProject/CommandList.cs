@@ -288,4 +288,17 @@ public class CommandList
             throw new KeyNotFoundException($"Variable '{variableName}' not found.");
         }
     }
+
+    public void ShowVariableValue(string variableName)
+    {
+        if (userVariables.TryGetValue(variableName, out int value))
+        {
+            MessageBox.Show($"Variable '{variableName}' has value: {value}", "Variable Value", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        else
+        {
+            MessageBox.Show($"Variable '{variableName}' is not defined.", "Variable Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
 }

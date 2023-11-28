@@ -83,6 +83,8 @@ namespace ASEProject
                     string variableName = parts[0].Trim();
                     int value = int.Parse(parts[1].Trim());
                     commandList.SetVariable(variableName, value);
+
+                    commandList.ShowVariableValue(variableName);
                 }
                 else
                 {
