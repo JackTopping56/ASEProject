@@ -75,26 +75,29 @@ namespace ASEProject
             foreach (string command in commands)
             {
                 string trimmedCommand = command.Trim();
-                Console.WriteLine($"Executing command: {trimmedCommand}");
 
-                if (commandParser.IsValidCommand(trimmedCommand) && commandParser.HasValidParameters(trimmedCommand))
+                // Check if the command is a variable declaration
+                if (commandParser.IsVariableDeclaration(trimmedCommand))
                 {
+                    var parts = trimmedCommand.Split('=');
+                    string variableName = parts[0].Trim();
+                    int value = int.Parse(parts[1].Trim());
+                    commandList.SetVariable(variableName, value);
+                }
+                else
+                {
+                    // Process and execute drawing commands
                     string[] parts = trimmedCommand.Split(' ');
                     string commandName = parts[0].ToLower();
 
                     if (commandDictionary.ContainsKey(commandName))
                     {
                         commandDictionary[commandName].Execute(commandList, parts);
-                        Console.WriteLine($"{trimmedCommand} command executed.");
                     }
                     else
                     {
-                        Console.WriteLine($"Unknown command: {trimmedCommand}");
+                        MessageBox.Show($"Unknown command: {trimmedCommand}", "Invalid Command", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"Invalid command: {trimmedCommand}");
                 }
             }
         }

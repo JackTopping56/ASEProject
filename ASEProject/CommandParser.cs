@@ -173,5 +173,17 @@ namespace ASEProject
             string fillMode = parameters[0].ToLower();
             return fillMode == "on" || fillMode == "off";
         }
+
+        public bool IsVariableDeclaration(string command)
+        {
+            var parts = command.Split('=');
+            return parts.Length == 2 && IsValidVariableName(parts[0].Trim()) && int.TryParse(parts[1].Trim(), out _);
+        }
+
+        // Helper method to validate variable names (simple implementation)
+        private bool IsValidVariableName(string variableName)
+        {
+            return !string.IsNullOrEmpty(variableName) && variableName.All(char.IsLetter);
+        }
     }
 }
