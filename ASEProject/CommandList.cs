@@ -168,16 +168,39 @@ public class CommandList
     {
         if (parts.Length >= 2)
         {
-            int radius = int.TryParse(parts[1], out var num) ? num : GetVariable(parts[1]);
+            int radius;
+
+            // Debugging: Check if the part is a number or a variable
+            if (int.TryParse(parts[1], out radius))
+            {
+                MessageBox.Show($"Using direct value for radius: {radius}", "Debug Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (userVariables.TryGetValue(parts[1], out radius))
+            {
+                MessageBox.Show($"Using variable '{parts[1]}' for radius, value: {radius}", "Debug Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show($"Radius value or variable '{parts[1]}' not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Exit the method if radius not found
+            }
+
             float diameter = radius * 2;
             RectangleF rect = new RectangleF(currentPosition.X - radius, currentPosition.Y - radius, diameter, diameter);
+
+            // Drawing logic
             if (FillModeOn)
             {
                 graphics.FillEllipse(pen.Brush, rect);
             }
             graphics.DrawEllipse(pen, rect);
         }
+        else
+        {
+            MessageBox.Show("Invalid command format for 'circle'.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
+
 
     /// <summary>
     /// Draws a triangle at the current position with specified dimensions.
