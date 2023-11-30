@@ -42,6 +42,11 @@ namespace ASEProject
         /// <returns>True if the command is a valid keyword; otherwise, false.</returns>
         public bool IsValidCommand(string command)
         {
+            if (IsVariableDeclaration(command))
+            {
+                return true;
+            }
+
             string[] parts = command.Split(' ');
 
             if (parts.Length == 0)
@@ -177,7 +182,15 @@ namespace ASEProject
         public bool IsVariableDeclaration(string command)
         {
             var parts = command.Split('=');
-            return parts.Length == 2 && IsValidVariableName(parts[0].Trim()) && int.TryParse(parts[1].Trim(), out _);
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            var variableName = parts[0].Trim();
+            var variableValue = parts[1].Trim();
+
+            return IsValidVariableName(variableName) && int.TryParse(variableValue, out _);
         }
 
         // Helper method to validate variable names (simple implementation)
