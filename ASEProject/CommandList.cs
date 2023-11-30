@@ -324,4 +324,9 @@ public class CommandList
         }
     }
 
+    public bool IsVariable(string variableName)
+    {
+        return userVariables.ContainsKey(variableName);
+    }
+
 }

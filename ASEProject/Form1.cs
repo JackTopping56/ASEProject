@@ -76,33 +76,41 @@ namespace ASEProject
             {
                 string trimmedCommand = command.Trim();
 
-                // Check if the command is a variable declaration
-                if (commandParser.IsVariableDeclaration(trimmedCommand))
+                try
                 {
-                    var parts = trimmedCommand.Split('=');
-                    string variableName = parts[0].Trim();
-                    int value = int.Parse(parts[1].Trim());
-                    commandList.SetVariable(variableName, value);
-
-                    commandList.ShowVariableValue(variableName);
-                }
-                else
-                {
-                    // Process and execute drawing commands
-                    string[] parts = trimmedCommand.Split(' ');
-                    string commandName = parts[0].ToLower();
-
-                    if (commandDictionary.ContainsKey(commandName))
+                    if (commandParser.IsVariableDeclaration(trimmedCommand))
                     {
-                        commandDictionary[commandName].Execute(commandList, parts);
+                        var parts = trimmedCommand.Split('=');
+                        string variableName = parts[0].Trim();
+                        int value = int.Parse(parts[1].Trim());
+                        commandList.SetVariable(variableName, value);
+
+                        // Optional: Show a message box or update a status label
+                        // MessageBox.Show($"Variable '{variableName}' set to {value}", "Variable Set", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show($"Unknown command: {trimmedCommand}", "Invalid Command", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Process and execute drawing commands
+                        string[] parts = commandParser.ReplaceVariables(trimmedCommand, commandList).Split(' ');
+                        string commandName = parts[0].ToLower();
+
+                        if (commandDictionary.ContainsKey(commandName))
+                        {
+                            commandDictionary[commandName].Execute(commandList, parts);
+                        }
+                        else
+                        {
+                            throw new CustomInvalidCommandException($"Unknown command: {trimmedCommand}");
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error processing command '{trimmedCommand}': {ex.Message}", "Command Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
 
         private void btnRun_Click(object sender, EventArgs e)
         {

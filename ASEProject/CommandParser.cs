@@ -198,5 +198,19 @@ namespace ASEProject
         {
             return !string.IsNullOrEmpty(variableName) && variableName.All(char.IsLetter);
         }
+
+        public string ReplaceVariables(string command, CommandList commandList)
+        {
+            var parts = command.Split(' ');
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (commandList.IsVariable(parts[i]))
+                {
+                    parts[i] = commandList.GetVariable(parts[i]).ToString();
+                }
+            }
+            return string.Join(" ", parts);
+        }
+
     }
 }
