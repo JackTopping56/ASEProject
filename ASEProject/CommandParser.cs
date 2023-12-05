@@ -259,7 +259,47 @@ namespace ASEProject
             return parts.Length > 0 && (parts[0].ToLower() == "loop" || parts[0].ToLower() == "endloop");
         }
 
-        // Add more methods if necessary for validating loop-specific syntax
+        public bool IsVariableDeclarationOrArithmetic(string command)
+        {
+            var parts = command.Split('=');
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            var variableName = parts[0].Trim();
+            var rightHandSide = parts[1].Trim();
+
+            // If the right-hand side is just a number or variable, it's a simple declaration
+            if (int.TryParse(rightHandSide, out _) || IsValidVariableName(rightHandSide))
+            {
+                return IsValidVariableName(variableName);
+            }
+            // If the right-hand side contains arithmetic operators, it's an arithmetic expression
+            else
+            {
+                return IsValidVariableName(variableName) && IsArithmeticExpression(rightHandSide);
+            }
+        }
+
+        private bool IsArithmeticExpression(string expression)
+        {
+            // This is a simple check for arithmetic expressions involving addition and subtraction
+            char[] operators = new[] { '+', '-' }; // Extend this array to include '*', '/' for multiplication and division
+            string[] parts = expression.Split(operators, StringSplitOptions.RemoveEmptyEntries);
+
+            // Check if each part is either a number or a valid variable name.
+            foreach (var part in parts)
+            {
+                string trimmedPart = part.Trim();
+                if (!int.TryParse(trimmedPart, out _) && !IsValidVariableName(trimmedPart))
+                {
+                    return false;
+                }
+            }
+            return parts.Length > 1; // There should be at least two parts for a valid expression
+        }
+
 
     }
 }

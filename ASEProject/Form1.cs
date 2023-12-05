@@ -181,11 +181,11 @@ namespace ASEProject
 
         private void ProcessRegularCommand(string command)
         {
-            if (commandParser.IsVariableDeclaration(command))
+            if (commandParser.IsVariableDeclarationOrArithmetic(command))
             {
                 var parts = command.Split('=');
                 string variableName = parts[0].Trim();
-                int value = int.Parse(parts[1].Trim());
+                int value = EvaluateArithmeticExpression(parts[1].Trim());
                 commandList.SetVariable(variableName, value);
             }
             else
@@ -216,6 +216,34 @@ namespace ASEProject
                 case "==": return variableValue == intValue;
                 default: throw new CustomInvalidCommandException($"Invalid operation: {operation}");
             }
+        }
+
+        private int EvaluateArithmeticExpression(string expression)
+        {
+            // Split the expression by operators
+            // Note: This simplistic split by '+' only supports addition and does not respect operator precedence.
+            // For a more comprehensive solution, consider implementing or using an existing expression evaluator.
+            string[] terms = expression.Split('+');
+            int sum = 0;
+
+            foreach (string term in terms)
+            {
+                string trimmedTerm = term.Trim();
+                if (int.TryParse(trimmedTerm, out int number))
+                {
+                    sum += number;
+                }
+                else if (commandList.IsVariable(trimmedTerm))
+                {
+                    sum += commandList.GetVariable(trimmedTerm);
+                }
+                else
+                {
+                    throw new CustomInvalidCommandException($"Invalid term in arithmetic expression: {trimmedTerm}");
+                }
+            }
+
+            return sum;
         }
 
 
