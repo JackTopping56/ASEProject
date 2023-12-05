@@ -32,7 +32,9 @@ namespace ASEProject
             "circle",
             "triangle",
             "pen",
-            "fill"
+            "fill", 
+            "if", 
+            "endif"
         };
 
         /// <summary>
@@ -212,5 +214,41 @@ namespace ASEProject
             return string.Join(" ", parts);
         }
 
+        // Inside the CommandParser class
+
+        public bool IsConditionalCommand(string command)
+        {
+            string[] parts = command.Split(' ');
+            return parts.Length > 0 && (parts[0].ToLower() == "if" || parts[0].ToLower() == "endif");
+        }
+
+        public bool IsValidConditionalCommand(string command, CommandList commandList)
+        {
+            string[] parts = command.Split(' ');
+            if (parts[0].ToLower() == "if")
+            {
+                // Basic structure check: if variable operator value
+                if (parts.Length != 4) return false;
+
+                string variable = parts[1];
+                string operation = parts[2]; // Renamed from 'operator' to 'operation'
+                string value = parts[3];
+
+                // Check if the variable exists
+                if (!commandList.IsVariable(variable)) return false;
+
+                // Validate the operation
+                if (!(operation == ">" || operation == "<" || operation == "==")) return false;
+
+                // Check if value is a number
+                return int.TryParse(value, out _);
+            }
+            else if (parts[0].ToLower() == "endif")
+            {
+                // "endif" should be standalone
+                return parts.Length == 1;
+            }
+            return false;
+        }
     }
 }

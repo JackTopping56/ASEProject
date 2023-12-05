@@ -69,6 +69,10 @@ namespace ASEProject
             }
         }
 
+        // Inside Form1 class
+
+        private Stack<bool> conditionalStack = new Stack<bool>();
+
         private void ExecuteCommandFromTextBox(string commandText)
         {
             string[] commands = commandText.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -78,30 +82,13 @@ namespace ASEProject
 
                 try
                 {
-                    if (commandParser.IsVariableDeclaration(trimmedCommand))
+                    if (commandParser.IsConditionalCommand(trimmedCommand))
                     {
-                        var parts = trimmedCommand.Split('=');
-                        string variableName = parts[0].Trim();
-                        int value = int.Parse(parts[1].Trim());
-                        commandList.SetVariable(variableName, value);
-
-                        // Optional: Show a message box or update a status label
-                        // MessageBox.Show($"Variable '{variableName}' set to {value}", "Variable Set", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ProcessConditionalCommand(trimmedCommand);
                     }
-                    else
+                    else if (ShouldExecuteCommand())
                     {
-                        // Process and execute drawing commands
-                        string[] parts = commandParser.ReplaceVariables(trimmedCommand, commandList).Split(' ');
-                        string commandName = parts[0].ToLower();
-
-                        if (commandDictionary.ContainsKey(commandName))
-                        {
-                            commandDictionary[commandName].Execute(commandList, parts);
-                        }
-                        else
-                        {
-                            throw new CustomInvalidCommandException($"Unknown command: {trimmedCommand}");
-                        }
+                        ProcessRegularCommand(trimmedCommand);
                     }
                 }
                 catch (Exception ex)
@@ -110,6 +97,72 @@ namespace ASEProject
                 }
             }
         }
+
+        private bool ShouldExecuteCommand()
+        {
+            return conditionalStack.Count == 0 || conditionalStack.Peek();
+        }
+
+        private void ProcessConditionalCommand(string command)
+        {
+            string[] parts = command.Split(' ');
+            if (parts[0].ToLower() == "if")
+            {
+                bool conditionResult = EvaluateCondition(parts[1], parts[2], parts[3]);
+                conditionalStack.Push(conditionResult);
+            }
+            else if (parts[0].ToLower() == "endif")
+            {
+                if (conditionalStack.Count > 0)
+                {
+                    conditionalStack.Pop();
+                }
+                else
+                {
+                    throw new CustomInvalidCommandException("Mismatched 'endif'");
+                }
+            }
+        }
+
+        private void ProcessRegularCommand(string command)
+        {
+            if (commandParser.IsVariableDeclaration(command))
+            {
+                var parts = command.Split('=');
+                string variableName = parts[0].Trim();
+                int value = int.Parse(parts[1].Trim());
+                commandList.SetVariable(variableName, value);
+            }
+            else
+            {
+                string[] parts = commandParser.ReplaceVariables(command, commandList).Split(' ');
+                string commandName = parts[0].ToLower();
+
+                if (commandDictionary.ContainsKey(commandName))
+                {
+                    commandDictionary[commandName].Execute(commandList, parts);
+                }
+                else
+                {
+                    throw new CustomInvalidCommandException($"Unknown command: {command}");
+                }
+            }
+        }
+
+        private bool EvaluateCondition(string variable, string operation, string value)
+        {
+            int variableValue = commandList.GetVariable(variable);
+            int intValue = int.Parse(value);
+
+            switch (operation)
+            {
+                case ">": return variableValue > intValue;
+                case "<": return variableValue < intValue;
+                case "==": return variableValue == intValue;
+                default: throw new CustomInvalidCommandException($"Invalid operation: {operation}");
+            }
+        }
+
 
 
         private void btnRun_Click(object sender, EventArgs e)
