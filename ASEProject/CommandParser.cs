@@ -250,5 +250,16 @@ namespace ASEProject
             }
             return false;
         }
+
+        // Inside CommandParser class
+
+        public bool IsLoopCommand(string command)
+        {
+            string[] parts = command.Split(' ');
+            return parts.Length > 0 && (parts[0].ToLower() == "loop" || parts[0].ToLower() == "endloop");
+        }
+
+        // Add more methods if necessary for validating loop-specific syntax
+
     }
 }

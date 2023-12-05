@@ -72,6 +72,10 @@ namespace ASEProject
         // Inside Form1 class
 
         private Stack<bool> conditionalStack = new Stack<bool>();
+        private bool isInsideLoop = false;
+        private List<string> loopCommands = new List<string>();
+        private int loopCounter = 0;
+
 
         private void ExecuteCommandFromTextBox(string commandText)
         {
@@ -82,7 +86,16 @@ namespace ASEProject
 
                 try
                 {
-                    if (commandParser.IsConditionalCommand(trimmedCommand))
+                    if (commandParser.IsLoopCommand(trimmedCommand))
+                    {
+                        ProcessLoopCommand(trimmedCommand);
+                    }
+                    else if (isInsideLoop)
+                    {
+                        // Collect loop commands, including if statements
+                        loopCommands.Add(trimmedCommand);
+                    }
+                    else if (commandParser.IsConditionalCommand(trimmedCommand))
                     {
                         ProcessConditionalCommand(trimmedCommand);
                     }
@@ -98,6 +111,48 @@ namespace ASEProject
             }
         }
 
+        private void ProcessLoopCommand(string command)
+        {
+            string[] parts = command.Split(' ');
+            if (parts[0].ToLower() == "loop")
+            {
+                if (isInsideLoop)
+                {
+                    throw new CustomInvalidCommandException("Nested loops are not supported.");
+                }
+
+                if (parts.Length != 2 || !int.TryParse(parts[1], out loopCounter))
+                {
+                    throw new CustomInvalidCommandException("Invalid loop syntax. Correct syntax: loop [number_of_iterations]");
+                }
+                isInsideLoop = true;
+                loopCommands.Clear();
+            }
+            else if (parts[0].ToLower() == "endloop")
+            {
+                if (!isInsideLoop)
+                {
+                    throw new CustomInvalidCommandException("Mismatched 'endloop'");
+                }
+
+                for (int i = 0; i < loopCounter; i++)
+                {
+                    foreach (var loopCommand in loopCommands)
+                    {
+                        if (commandParser.IsConditionalCommand(loopCommand))
+                        {
+                            ProcessConditionalCommand(loopCommand);
+                        }
+                        else
+                        {
+                            ProcessRegularCommand(loopCommand);
+                        }
+                    }
+                }
+
+                isInsideLoop = false;
+            }
+        }
         private bool ShouldExecuteCommand()
         {
             return conditionalStack.Count == 0 || conditionalStack.Peek();
