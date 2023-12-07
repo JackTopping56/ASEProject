@@ -62,4 +62,58 @@ public class CommandParserTests
             parser.HasValidParameters(invalidCommand);
         });
     }
+
+    // Testing conditional command validation
+    [Fact]
+    public void IsConditionalCommand_ValidIf_ReturnsTrue()
+    {
+        CommandParser parser = new CommandParser();
+        string ifCommand = "if x > 10";
+
+        Assert.True(parser.IsConditionalCommand(ifCommand));
+    }
+
+    // Testing loop command validation
+    [Fact]
+    public void IsLoopCommand_ValidLoop_ReturnsTrue()
+    {
+        CommandParser parser = new CommandParser();
+        string loopCommand = "loop 5";
+
+        Assert.True(parser.IsLoopCommand(loopCommand));
+    }
+
+    // Testing variable declaration handling
+    [Fact]
+    public void IsVariableDeclaration_ValidDeclaration_ReturnsTrue()
+    {
+        CommandParser parser = new CommandParser();
+        string varDeclaration = "x = 10";
+
+        Assert.True(parser.IsVariableDeclarationOrArithmetic(varDeclaration));
+    }
+
+    // Testing arithmetic expression handling
+    [Fact]
+    public void IsArithmeticExpression_ValidExpression_ReturnsTrue()
+    {
+        CommandParser parser = new CommandParser();
+        string arithmeticExpression = "x = y + 5";
+
+        Assert.True(parser.IsVariableDeclarationOrArithmetic(arithmeticExpression));
+    }
+
+    // Testing variable replacement in commands
+    [Fact]
+    public void ReplaceVariables_WithVariables_ReplacesCorrectly()
+    {
+        CommandParser parser = new CommandParser();
+        CommandList commandList = new CommandList(null);
+        commandList.SetVariable("x", 20);
+        string commandWithVariable = "moveto x 30";
+
+        string replacedCommand = parser.ReplaceVariables(commandWithVariable, commandList);
+
+        Assert.Equal("moveto 20 30", replacedCommand);
+    }
 }
