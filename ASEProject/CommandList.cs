@@ -30,11 +30,11 @@ public class CommandList
         userVariables = new Dictionary<string, int>();
     }
 
-    /// <summary>
-    /// Initializes a new instance of the CommandList class without a Graphics object.
-    /// </summary>
-   
 
+    /// <summary>
+    /// Gets the color of the current drawing pen.
+    /// </summary>
+    /// <returns>The color of the pen.</returns>
     public Color GetPenColor()
     {
         return pen.Color;
@@ -293,13 +293,21 @@ public class CommandList
         return currentPosition;
     }
 
-    // Method to add or update a variable
+    /// <summary>
+    /// Adds or updates a user-defined variable with the specified value.
+    /// </summary>
+    /// <param name="variableName">The name of the variable to add or update.</param>
+    /// <param name="value">The value to assign to the variable.</param>
     public void SetVariable(string variableName, int value)
     {
         userVariables[variableName] = value;
     }
 
-    // Method to retrieve a variable's value
+    /// <summary>
+    /// Retrieves the value of a user-defined variable.
+    /// </summary>
+    /// <param name="variableName">The name of the variable to retrieve.</param>
+    /// <returns>The value of the variable.</returns>
     public int GetVariable(string variableName)
     {
         if (userVariables.TryGetValue(variableName, out int value))
@@ -312,6 +320,10 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Displays the value of a user-defined variable in a message box.
+    /// </summary>
+    /// <param name="variableName">The name of the variable to display.</param>
     public void ShowVariableValue(string variableName)
     {
         if (userVariables.TryGetValue(variableName, out int value))
@@ -323,6 +335,12 @@ public class CommandList
             MessageBox.Show($"Variable '{variableName}' is not defined.", "Variable Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
+
+    /// <summary>
+    /// Checks whether a user-defined variable exists.
+    /// </summary>
+    /// <param name="variableName">The name of the variable to check.</param>
+    /// <returns>True if the variable exists; otherwise, false.</returns>
 
     public bool IsVariable(string variableName)
     {
