@@ -36,6 +36,9 @@ namespace ASEProject
             Save.Click += Save_Click;
         }
 
+        /// <summary>
+        /// Initializes the command dictionary with command keywords and their corresponding command objects.
+        /// </summary>
         private void InitializeCommandDictionary()
         {
             commandDictionary = new Dictionary<string, ICommand>
@@ -52,6 +55,11 @@ namespace ASEProject
             };
         }
 
+        /// <summary>
+        /// Handles the KeyPress event for the CommandBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">A KeyPressEventArgs that contains the event data.</param>
         private void CommandBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -69,13 +77,15 @@ namespace ASEProject
             }
         }
 
-
         private Stack<bool> conditionalStack = new Stack<bool>();
         private bool isInsideLoop = false;
         private List<string> loopCommands = new List<string>();
         private int loopCounter = 0;
 
-
+        /// <summary>
+        /// Executes a command from the command text box.
+        /// </summary>
+        /// <param name="commandText">The command text to execute.</param>
         private void ExecuteCommandFromTextBox(string commandText)
         {
             string[] commands = commandText.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -110,6 +120,11 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Processes a loop command.
+        /// </summary>
+        /// <param name="command">The loop command to process.</param>
+        /// <exception cref="CustomInvalidCommandException">Thrown when nested loops are detected or when loop syntax is invalid.</exception>
         private void ProcessLoopCommand(string command)
         {
             string[] parts = command.Split(' ');
@@ -152,11 +167,21 @@ namespace ASEProject
                 isInsideLoop = false;
             }
         }
+
+        /// <summary>
+        /// Determines if the current command should be executed based on conditional logic.
+        /// </summary>
+        /// <returns>True if the command should be executed; otherwise, false.</returns>
         private bool ShouldExecuteCommand()
         {
             return conditionalStack.Count == 0 || conditionalStack.Peek();
         }
 
+        /// <summary>
+        /// Processes a conditional command.
+        /// </summary>
+        /// <param name="command">The conditional command to process.</param>
+        /// <exception cref="CustomInvalidCommandException">Thrown when there is a mismatch in conditional command syntax.</exception>
         private void ProcessConditionalCommand(string command)
         {
             string[] parts = command.Split(' ');
@@ -178,6 +203,11 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Processes a regular command.
+        /// </summary>
+        /// <param name="command">The command to process.</param>
+        /// <exception cref="CustomInvalidCommandException">Thrown when an unknown command is encountered or when there is an error in arithmetic expression.</exception>
         private void ProcessRegularCommand(string command)
         {
             if (commandParser.IsVariableDeclarationOrArithmetic(command))
@@ -203,6 +233,14 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Evaluates a condition for a conditional command.
+        /// </summary>
+        /// <param name="variable">The variable to evaluate.</param>
+        /// <param name="operation">The operation for the condition.</param>
+        /// <param name="value">The value to compare the variable against.</param>
+        /// <returns>True if the condition is met; otherwise, false.</returns>
+        /// <exception cref="CustomInvalidCommandException">Thrown when an invalid operation is provided.</exception>
         private bool EvaluateCondition(string variable, string operation, string value)
         {
             int variableValue = commandList.GetVariable(variable);
@@ -217,6 +255,12 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Evaluates an arithmetic expression.
+        /// </summary>
+        /// <param name="expression">The arithmetic expression to evaluate.</param>
+        /// <returns>The result of the arithmetic expression.</returns>
+        /// <exception cref="CustomInvalidCommandException">Thrown when an invalid term is encountered in the arithmetic expression.</exception>
         private int EvaluateArithmeticExpression(string expression)
         {
             // Split the expression by operators
@@ -245,8 +289,11 @@ namespace ASEProject
             return sum;
         }
 
-
-
+        /// <summary>
+        /// Handles the Click event for the Run button.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void btnRun_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Run button clicked");
@@ -265,6 +312,11 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Handles the Click event for the Open menu item.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void Open_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -286,6 +338,11 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Handles the Click event for the Save menu item.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void Save_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
