@@ -213,5 +213,50 @@ namespace CommandListTests
             // Assert
             Assert.Equal(Color.Red, penColor);
         }
+
+        [Fact]
+        public void Variable_SetAndGet()
+        {
+            var commandList = new CommandList(Graphics.FromImage(new Bitmap(1, 1)));
+            commandList.SetVariable("testVar", 100);
+
+            int value = commandList.GetVariable("testVar");
+
+            Assert.Equal(100, value);
+        }
+
+        // Test for executing commands within a loop
+        [Fact]
+        public void Loop_ExecuteCommands()
+        {
+            var commandList = new CommandList(Graphics.FromImage(new Bitmap(1, 1)));
+
+            commandList.ExecuteCommand("loop 2");
+            commandList.ExecuteCommand("moveto 10 10");
+            commandList.ExecuteCommand("drawto 20 20");
+            commandList.ExecuteCommand("endloop");
+
+            // Assert that the final position is as expected after loop execution
+            Assert.Equal(new PointF(20, 20), commandList.GetCurrentPosition());
+        }
+
+        // Test for executing commands with an if statement
+        [Fact]
+        public void IfStatement_ConditionalExecution()
+        {
+            var commandList = new CommandList(Graphics.FromImage(new Bitmap(1, 1)));
+            commandList.SetVariable("x", 10);
+
+            commandList.ExecuteCommand("if x > 5");
+            commandList.ExecuteCommand("moveto 30 30");
+            commandList.ExecuteCommand("endif");
+
+            // Assert that the moveto command inside the if statement was executed
+            Assert.Equal(new PointF(30, 30), commandList.GetCurrentPosition());
+        }
+
+        // Test for ensuring commands inside an if statement are not executed when the condition is false
+        [Fact]
+      
     }
 }
