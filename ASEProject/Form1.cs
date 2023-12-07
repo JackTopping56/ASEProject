@@ -69,7 +69,6 @@ namespace ASEProject
             }
         }
 
-        // Inside Form1 class
 
         private Stack<bool> conditionalStack = new Stack<bool>();
         private bool isInsideLoop = false;

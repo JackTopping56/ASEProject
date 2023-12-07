@@ -121,8 +121,11 @@ namespace ASEProject
             return true;
         }
 
-        // Helper methods for specific command parameter validation...
-
+        /// <summary>
+        /// Validates parameters for the "moveto" command.
+        /// </summary>
+        /// <param name="parameters">Array of parameters for the "moveto" command.</param>
+        /// <returns>True if parameters are valid; otherwise, false.</returns>
         private bool IsValidMoveToParameters(string[] parameters)
         {
             if (parameters.Length != 2)
@@ -131,6 +134,11 @@ namespace ASEProject
             return int.TryParse(parameters[0], out _) && int.TryParse(parameters[1], out _);
         }
 
+        /// <summary>
+        /// Validates parameters for the "drawto" command.
+        /// </summary>
+        /// <param name="parameters">Array of parameters for the "drawto" command.</param>
+        /// <returns>True if parameters are valid; otherwise, false.</returns>
         private bool IsValidDrawToParameters(string[] parameters)
         {
             if (parameters.Length != 2)
@@ -139,6 +147,11 @@ namespace ASEProject
             return int.TryParse(parameters[0], out _) && int.TryParse(parameters[1], out _);
         }
 
+        /// <summary>
+        /// Validates parameters for the "rectangle" command.
+        /// </summary>
+        /// <param name="parameters">Array of parameters for the "rectangle" command.</param>
+        /// <returns>True if parameters are valid; otherwise, false.</returns>
         private bool IsValidRectangleParameters(string[] parameters)
         {
             if (parameters.Length != 2)
@@ -147,6 +160,11 @@ namespace ASEProject
             return int.TryParse(parameters[0], out _) && int.TryParse(parameters[1], out _);
         }
 
+        /// <summary>
+        /// Validates parameters for the "circle" command.
+        /// </summary>
+        /// <param name="parameters">Array of parameters for the "circle" command.</param>
+        /// <returns>True if parameters are valid; otherwise, false.</returns>
         private bool IsValidCircleParameters(string[] parameters)
         {
             if (parameters.Length != 1)
@@ -155,6 +173,11 @@ namespace ASEProject
             return int.TryParse(parameters[0], out _);
         }
 
+        /// <summary>
+        /// Validates parameters for the "triangle" command.
+        /// </summary>
+        /// <param name="parameters">Array of parameters for the "triangle" command.</param>
+        /// <returns>True if parameters are valid; otherwise, false.</returns>
         private bool IsValidTriangleParameters(string[] parameters)
         {
             if (parameters.Length != 6)
@@ -163,6 +186,11 @@ namespace ASEProject
             return parameters.All(param => int.TryParse(param, out _));
         }
 
+        /// <summary>
+        /// Validates parameters for the "pen" command.
+        /// </summary>
+        /// <param name="parameters">Array of parameters for the "pen" command.</param>
+        /// <returns>True if parameters are valid; otherwise, false.</returns>
         private bool IsValidPenParameters(string[] parameters)
         {
             if (parameters.Length != 1)
@@ -172,6 +200,11 @@ namespace ASEProject
             return color == "red" || color == "green" || color == "blue" || color == "black";
         }
 
+        /// <summary>
+        /// Validates parameters for the "fill" command.
+        /// </summary>
+        /// <param name="parameters">Array of parameters for the "fill" command.</param>
+        /// <returns>True if parameters are valid; otherwise, false.</returns>
         private bool IsValidFillParameters(string[] parameters)
         {
             if (parameters.Length != 1)
@@ -181,6 +214,11 @@ namespace ASEProject
             return fillMode == "on" || fillMode == "off";
         }
 
+        /// <summary>
+        /// Checks if a command is a variable declaration.
+        /// </summary>
+        /// <param name="command">The command to check.</param>
+        /// <returns>True if the command is a variable declaration; otherwise, false.</returns>
         public bool IsVariableDeclaration(string command)
         {
             var parts = command.Split('=');
@@ -195,12 +233,22 @@ namespace ASEProject
             return IsValidVariableName(variableName) && int.TryParse(variableValue, out _);
         }
 
-        // Helper method to validate variable names (simple implementation)
+        /// <summary>
+        /// Validates a variable name.
+        /// </summary>
+        /// <param name="variableName">The variable name to validate.</param>
+        /// <returns>True if the variable name is valid; otherwise, false.</returns>
         private bool IsValidVariableName(string variableName)
         {
             return !string.IsNullOrEmpty(variableName) && variableName.All(char.IsLetter);
         }
 
+        /// <summary>
+        /// Replaces variables in a command with their corresponding values.
+        /// </summary>
+        /// <param name="command">The command string with variables.</param>
+        /// <param name="commandList">The CommandList containing the variable values.</param>
+        /// <returns>A command string with variables replaced by their values.</returns>
         public string ReplaceVariables(string command, CommandList commandList)
         {
             var parts = command.Split(' ');
@@ -214,14 +262,23 @@ namespace ASEProject
             return string.Join(" ", parts);
         }
 
-        // Inside the CommandParser class
-
+        /// <summary>
+        /// Checks if a command is a conditional command (if or endif).
+        /// </summary>
+        /// <param name="command">The command to check.</param>
+        /// <returns>True if the command is a conditional command; otherwise, false.</returns>
         public bool IsConditionalCommand(string command)
         {
             string[] parts = command.Split(' ');
             return parts.Length > 0 && (parts[0].ToLower() == "if" || parts[0].ToLower() == "endif");
         }
 
+        /// <summary>
+        /// Validates the syntax of a conditional command.
+        /// </summary>
+        /// <param name="command">The conditional command to validate.</param>
+        /// <param name="commandList">The CommandList for variable checking.</param>
+        /// <returns>True if the conditional command syntax is valid; otherwise, false.</returns>
         public bool IsValidConditionalCommand(string command, CommandList commandList)
         {
             string[] parts = command.Split(' ');
@@ -231,7 +288,7 @@ namespace ASEProject
                 if (parts.Length != 4) return false;
 
                 string variable = parts[1];
-                string operation = parts[2]; // Renamed from 'operator' to 'operation'
+                string operation = parts[2]; 
                 string value = parts[3];
 
                 // Check if the variable exists
@@ -251,14 +308,22 @@ namespace ASEProject
             return false;
         }
 
-        // Inside CommandParser class
-
+        /// <summary>
+        /// Checks if a command is related to loops (loop or endloop).
+        /// </summary>
+        /// <param name="command">The command to check.</param>
+        /// <returns>True if the command is related to loops; otherwise, false.</returns>
         public bool IsLoopCommand(string command)
         {
             string[] parts = command.Split(' ');
             return parts.Length > 0 && (parts[0].ToLower() == "loop" || parts[0].ToLower() == "endloop");
         }
 
+        /// <summary>
+        /// Checks if a command is a variable declaration or involves arithmetic operations.
+        /// </summary>
+        /// <param name="command">The command to check.</param>
+        /// <returns>True if the command is a variable declaration or an arithmetic operation; otherwise, false.</returns>
         public bool IsVariableDeclarationOrArithmetic(string command)
         {
             var parts = command.Split('=');
@@ -282,10 +347,15 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Checks if a string is an arithmetic expression.
+        /// </summary>
+        /// <param name="expression">The string to check.</param>
+        /// <returns>True if the string is an arithmetic expression; otherwise, false.</returns>
         private bool IsArithmeticExpression(string expression)
         {
             // This is a simple check for arithmetic expressions involving addition and subtraction
-            char[] operators = new[] { '+', '-' }; // Extend this array to include '*', '/' for multiplication and division
+            char[] operators = new[] { '+', '-' };
             string[] parts = expression.Split(operators, StringSplitOptions.RemoveEmptyEntries);
 
             // Check if each part is either a number or a valid variable name.
@@ -299,7 +369,5 @@ namespace ASEProject
             }
             return parts.Length > 1; // There should be at least two parts for a valid expression
         }
-
-
     }
 }
