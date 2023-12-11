@@ -255,8 +255,7 @@ namespace CommandListTests
             Assert.Equal(new PointF(30, 30), commandList.GetCurrentPosition());
         }
 
-        // Test for ensuring commands inside an if statement are not executed when the condition is false
-        [Fact]
+      
       
     }
 }
