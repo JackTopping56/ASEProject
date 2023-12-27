@@ -241,10 +241,17 @@ namespace ASEProject
                     throw new CustomInvalidCommandException("Nested loops are not supported.");
                 }
 
-                if (parts.Length != 2 || !int.TryParse(parts[1], out loopCounter))
+                string loopCountStr = parts[1];
+                // Check if loopCountStr is a variable
+                if (commandList.IsVariable(loopCountStr))
+                {
+                    loopCounter = commandList.GetVariable(loopCountStr);
+                }
+                else if (!int.TryParse(loopCountStr, out loopCounter))
                 {
                     throw new CustomInvalidCommandException("Invalid loop syntax. Correct syntax: loop [number_of_iterations]");
                 }
+
                 isInsideLoop = true;
                 loopCommands.Clear();
             }
@@ -255,21 +262,7 @@ namespace ASEProject
                     throw new CustomInvalidCommandException("Mismatched 'endloop'");
                 }
 
-                for (int i = 0; i < loopCounter; i++)
-                {
-                    foreach (var loopCommand in loopCommands)
-                    {
-                        if (commandParser.IsConditionalCommand(loopCommand))
-                        {
-                            ProcessConditionalCommand(loopCommand);
-                        }
-                        else
-                        {
-                            ProcessRegularCommand(loopCommand);
-                        }
-                    }
-                }
-
+                ExecuteLoopCommands();
                 isInsideLoop = false;
             }
         }
