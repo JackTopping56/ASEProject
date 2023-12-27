@@ -97,14 +97,10 @@ namespace ASEProject
 
                 try
                 {
-                    if (commandParser.IsMethodDefinition(trimmedCommand))
+                    // Check if currently defining a method
+                    if (isDefiningMethod)
                     {
-                        isDefiningMethod = true;
-                        currentMethodDefinition = new List<string> { trimmedCommand };
-                    }
-                    else if (trimmedCommand.Equals("endmethod", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (isDefiningMethod)
+                        if (trimmedCommand.Equals("endmethod", StringComparison.OrdinalIgnoreCase))
                         {
                             currentMethodDefinition.Add(trimmedCommand);
                             var method = commandParser.ParseMethodDefinition(currentMethodDefinition);
@@ -114,17 +110,30 @@ namespace ASEProject
                         }
                         else
                         {
-                            throw new CustomInvalidCommandException("Unexpected 'endmethod'");
+                            currentMethodDefinition.Add(trimmedCommand);
                         }
                     }
-                    else if (isDefiningMethod)
+                    else if (commandParser.IsMethodDefinition(trimmedCommand))
                     {
-                        currentMethodDefinition.Add(trimmedCommand);
+                        isDefiningMethod = true;
+                        currentMethodDefinition = new List<string> { trimmedCommand };
                     }
+                    // Handling loops
+                    else if (commandParser.IsLoopCommand(trimmedCommand))
+                    {
+                        ProcessLoopCommand(trimmedCommand);
+                    }
+                    // Handling conditional statements
+                    else if (commandParser.IsConditionalCommand(trimmedCommand))
+                    {
+                        ProcessConditionalCommand(trimmedCommand);
+                    }
+                    // Handling method calls
                     else if (commandParser.IsMethodCall(trimmedCommand))
                     {
                         ExecuteMethodCall(trimmedCommand);
                     }
+                    // Handling other commands including variables
                     else
                     {
                         ProcessRegularCommand(trimmedCommand);
@@ -137,12 +146,12 @@ namespace ASEProject
             }
         }
 
+
         private void ExecuteMethodCall(string command)
         {
             var parts = command.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
             var methodName = parts[0].Trim();
             var methodParams = parts[1].Split(',').Select(p => p.Trim()).ToList();
-
             commandList.ExecuteMethod(methodName, methodParams);
         }
 
