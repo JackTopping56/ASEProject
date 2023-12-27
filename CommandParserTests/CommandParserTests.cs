@@ -158,4 +158,25 @@ public class CommandParserTests
         Assert.Equal(new List<string> { "x", "y" }, method.Parameters);
         Assert.Equal(new List<string> { "moveto x y", "circle 5" }, method.Commands);
     }
+
+    [Fact]
+    public void IsValidMethodCall_CorrectFormatToExistingMethod_ReturnsTrue()
+    {
+        // Arrange
+        CommandParser parser = new CommandParser();
+        CommandList commandList = new CommandList(null);
+
+        // Add a mock method to the command list
+        Method mockMethod = new Method("drawCircle")
+        {
+            Parameters = new List<string> { "radius" }
+        };
+        commandList.AddMethod(mockMethod);
+
+        // Act
+        bool isValid = parser.IsValidMethodCall("drawCircle(10)", commandList);
+
+        // Assert
+        Assert.True(isValid);
+    }
 }
