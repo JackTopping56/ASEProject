@@ -78,10 +78,24 @@ namespace ASEProject
                 }
             }
         }
-
+        /// <summary>
+        /// A stack used to manage conditional statements (if-else) during command execution.
+        /// </summary>
         private Stack<bool> conditionalStack = new Stack<bool>();
+
+        /// <summary>
+        /// Indicates whether the command execution is currently inside a loop.
+        /// </summary>
         private bool isInsideLoop = false;
+
+        /// <summary>
+        /// Stores the commands that are part of the current loop, to be executed repeatedly.
+        /// </summary>
         private List<string> loopCommands = new List<string>();
+
+        /// <summary>
+        /// Keeps track of the number of iterations for the current loop.
+        /// </summary>
         private int loopCounter = 0;
 
         /// <summary>
@@ -120,6 +134,10 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Handles the definition of a method by collecting its commands and adding the method to the command list.
+        /// </summary>
+        /// <param name="command">The command line to process as part of method definition.</param>
         private void HandleMethodDefinition(string command)
         {
             if (command.Equals("endmethod", StringComparison.OrdinalIgnoreCase))
@@ -136,6 +154,10 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Handles commands within a loop structure, collecting them or executing the loop.
+        /// </summary>
+        /// <param name="command">The command line to process as part of loop execution.</param>
         private void HandleLoopCommands(string command)
         {
             if (command.ToLower() == "endloop")
@@ -150,6 +172,9 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Executes all the commands stored for the current loop for the specified number of iterations.
+        /// </summary>
         private void ExecuteLoopCommands()
         {
             for (int i = 0; i < loopCounter; i++)
@@ -161,6 +186,10 @@ namespace ASEProject
             }
         }
 
+        /// <summary>
+        /// Processes a single command, determining its type and executing it accordingly.
+        /// </summary>
+        /// <param name="command">The command line to process.</param>
         private void ProcessCommand(string command)
         {
             if (commandParser.IsMethodDefinition(command))
@@ -185,6 +214,11 @@ namespace ASEProject
                 ProcessRegularCommand(command);
             }
         }
+
+        /// <summary>
+        /// Executes a method call by parsing the command and invoking the method with the provided parameters.
+        /// </summary>
+        /// <param name="command">The command line representing a method call.</param>
         private void ExecuteMethodCall(string command)
         {
             var parts = command.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
