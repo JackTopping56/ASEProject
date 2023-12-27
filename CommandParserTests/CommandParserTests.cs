@@ -116,4 +116,46 @@ public class CommandParserTests
 
         Assert.Equal("moveto 20 30", replacedCommand);
     }
+
+    // Testing method definition handling
+    [Fact]
+    public void IsMethodDefinition_ValidMethodDefinition_ReturnsTrue()
+    {
+        CommandParser parser = new CommandParser();
+        string methodDefinition = "method drawSmallCircle x y";
+
+        Assert.True(parser.IsMethodDefinition(methodDefinition));
+    }
+
+    // Testing method call handling
+    [Fact]
+    public void IsMethodCall_ValidMethodCall_ReturnsTrue()
+    {
+        CommandParser parser = new CommandParser();
+        string methodCall = "drawSmallCircle(20, 20)";
+
+        Assert.True(parser.IsMethodCall(methodCall));
+    }
+
+    // Testing parsing of a complete method definition
+    [Fact]
+    public void ParseMethodDefinition_ValidDefinition_ParsesCorrectly()
+    {
+        CommandParser parser = new CommandParser();
+        var commandList = new CommandList(null); // Assuming null is an acceptable Graphics object here
+        List<string> methodDefinitionLines = new List<string>
+        {
+            "method drawSmallCircle x y",
+            "moveto x y",
+            "circle 5",
+            "endmethod"
+        };
+
+        var method = parser.ParseMethodDefinition(methodDefinitionLines);
+
+        Assert.NotNull(method);
+        Assert.Equal("drawSmallCircle", method.Name);
+        Assert.Equal(new List<string> { "x", "y" }, method.Parameters);
+        Assert.Equal(new List<string> { "moveto x y", "circle 5" }, method.Commands);
+    }
 }
