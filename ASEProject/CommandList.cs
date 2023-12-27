@@ -344,17 +344,26 @@ public class CommandList
     /// </summary>
     /// <param name="variableName">The name of the variable to check.</param>
     /// <returns>True if the variable exists; otherwise, false.</returns>
-
     public bool IsVariable(string variableName)
     {
         return userVariables.ContainsKey(variableName);
     }
 
+    /// <summary>
+    /// Adds a new method to the command list or updates an existing one.
+    /// </summary>
+    /// <param name="method">The method to add or update.</param>
     public void AddMethod(Method method)
     {
         methods[method.Name] = method;
     }
 
+    /// <summary>
+    /// Executes a specified method with the given parameters.
+    /// </summary>
+    /// <param name="methodName">The name of the method to execute.</param>
+    /// <param name="parameters">A list of parameters to pass to the method.</param>
+    /// <exception cref="Exception">Thrown if the method is not found or if the number of parameters is incorrect.</exception>
     public void ExecuteMethod(string methodName, List<string> parameters)
     {
         if (!methods.TryGetValue(methodName, out Method method))
@@ -382,6 +391,12 @@ public class CommandList
         }
     }
 
+    /// <summary>
+    /// Replaces parameters in a command with their actual values.
+    /// </summary>
+    /// <param name="command">The command containing parameters to replace.</param>
+    /// <param name="parameterMap">A dictionary mapping parameter names to their actual values.</param>
+    /// <returns>The processed command with actual parameter values.</returns>
     private string ReplaceParametersInCommand(string command, Dictionary<string, string> parameterMap)
     {
         var parts = command.Split(' ');
@@ -395,12 +410,22 @@ public class CommandList
         return string.Join(" ", parts);
     }
 
+    /// <summary>
+    /// Checks if a method with the specified name exists in the command list.
+    /// </summary>
+    /// <param name="methodName">The name of the method to check.</param>
+    /// <returns>True if the method exists; otherwise, false.</returns>
     public bool MethodExists(string methodName)
     {
         return methods.ContainsKey(methodName);
     }
 
-    // Add this method
+    /// <summary>
+    /// Retrieves a method by its name.
+    /// </summary>
+    /// <param name="methodName">The name of the method to retrieve.</param>
+    /// <returns>The method with the specified name.</returns>
+    /// <exception cref="KeyNotFoundException">Thrown if the method is not found.</exception>
     public Method GetMethod(string methodName)
     {
         if (methods.TryGetValue(methodName, out Method method))
@@ -412,5 +437,4 @@ public class CommandList
             throw new KeyNotFoundException($"Method '{methodName}' not found.");
         }
     }
-
 }
