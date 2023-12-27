@@ -8,7 +8,6 @@ namespace ASEProject
     /// <summary>
     /// Represents the main form of the drawing application.
     /// </summary>
-
     public class CustomInvalidCommandException : Exception
     {
         public CustomInvalidCommandException() { }

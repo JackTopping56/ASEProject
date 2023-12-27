@@ -98,7 +98,7 @@ namespace CommandListTests
             commandList.ExecuteCommand("moveto 50 50");
             commandList.ExecuteCommand("rectangle 50 50");
 
-            // Assert (You may add more specific assertions for rectangle drawing)
+            // Assert 
             Assert.NotEqual(PointF.Empty, commandList.GetCurrentPosition());
         }
 
@@ -116,7 +116,7 @@ namespace CommandListTests
             commandList.ExecuteCommand("moveto 50 50");
             commandList.ExecuteCommand("circle 25");
 
-            // Assert (You may add more specific assertions for circle drawing)
+            // Assert 
             Assert.NotEqual(PointF.Empty, commandList.GetCurrentPosition());
         }
 
@@ -134,7 +134,7 @@ namespace CommandListTests
             commandList.ExecuteCommand("moveto 50 50");
             commandList.ExecuteCommand("triangle 20 30 40 50 60 70");
 
-            // Assert (You may add more specific assertions for triangle drawing)
+            // Assert 
             Assert.NotEqual(PointF.Empty, commandList.GetCurrentPosition());
         }
 
@@ -151,7 +151,7 @@ namespace CommandListTests
             // Act
             commandList.ExecuteCommand("invalidcommand");
 
-            // Assert (You may add assertions for handling invalid commands)
+            // Assert
             Assert.Equal(PointF.Empty, commandList.GetCurrentPosition());
         }
 
