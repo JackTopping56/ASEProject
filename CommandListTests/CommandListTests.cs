@@ -197,6 +197,10 @@ namespace CommandListTests
             // Assert
             Assert.False(fillModeOnValue);
         }
+
+        /// <summary>
+        /// Tests if the 'pen' command correctly changes the pen color to red.
+        /// </summary>
         [Fact]
         public void ExecuteCommand_PenColorChange_Red()
         {
@@ -214,6 +218,9 @@ namespace CommandListTests
             Assert.Equal(Color.Red, penColor);
         }
 
+        /// <summary>
+        /// Tests the functionality of setting and getting a variable within the command list.
+        /// </summary>
         [Fact]
         public void Variable_SetAndGet()
         {
@@ -225,7 +232,9 @@ namespace CommandListTests
             Assert.Equal(100, value);
         }
 
-        // Test for executing commands within a loop
+        /// <summary>
+        /// Tests the execution of commands within a loop, verifying if the final position matches the expected result after the loop's execution.
+        /// </summary>
         [Fact]
         public void Loop_ExecuteCommands()
         {
@@ -240,7 +249,9 @@ namespace CommandListTests
             Assert.Equal(new PointF(20, 20), commandList.GetCurrentPosition());
         }
 
-        // Test for executing commands with an if statement
+        /// <summary>
+        /// Tests the conditional execution of commands using an 'if' statement, checking if commands are correctly executed based on the condition.
+        /// </summary>
         [Fact]
         public void IfStatement_ConditionalExecution()
         {
@@ -256,7 +267,9 @@ namespace CommandListTests
         }
 
 
-        // Test for defining and executing a methods
+        /// <summary>
+        /// Tests the definition and execution of a method within the command list, ensuring that the method's execution affects the state as expected.
+        /// </summary>
         [Fact]
         public void Method_DefineAndExecute()
         {
