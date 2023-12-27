@@ -255,7 +255,27 @@ namespace CommandListTests
             Assert.Equal(new PointF(30, 30), commandList.GetCurrentPosition());
         }
 
-      
-      
+
+        // Test for defining and executing a methods
+        [Fact]
+        public void Method_DefineAndExecute()
+        {
+            var commandList = new CommandList(Graphics.FromImage(new Bitmap(1, 1)));
+
+            // Define a method that moves to a fixed position
+            commandList.ExecuteCommand("method moveToFixedPosition");
+            commandList.ExecuteCommand("moveto 30 30");
+            commandList.ExecuteCommand("endmethod");
+
+            // Execute the method
+            commandList.ExecuteCommand("moveToFixedPosition");
+
+            // Retrieve the current position after method execution
+            PointF currentPosition = commandList.GetCurrentPosition();
+
+            // Assert that the current position is set by the method
+            Assert.Equal(new PointF(30, 30), currentPosition);
+        }
+
     }
 }
