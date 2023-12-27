@@ -369,5 +369,59 @@ namespace ASEProject
             }
             return parts.Length > 1; // There should be at least two parts for a valid expression
         }
+
+        public bool IsMethodDefinition(string command)
+        {
+            return command.StartsWith("method ");
+        }
+
+        public bool IsMethodCall(string command)
+        {
+            var parts = command.Split('(');
+            if (parts.Length != 2) return false;
+            return IsValidMethodName(parts[0].Trim());
+        }
+
+        private bool IsValidMethodName(string methodName)
+        {
+            // Assuming method names are similar to variable names
+            return !string.IsNullOrEmpty(methodName) && methodName.All(char.IsLetter);
+        }
+
+        public Method ParseMethodDefinition(List<string> methodLines)
+        {
+            if (methodLines.Count == 0 || !IsMethodDefinition(methodLines[0]))
+            {
+                throw new InvalidCommandException("Invalid method definition.");
+            }
+
+            var headerParts = methodLines[0].Split(new[] { ' ', '(', ',', ')' }, StringSplitOptions.RemoveEmptyEntries);
+            if (headerParts.Length < 2 || headerParts[0] != "method")
+            {
+                throw new InvalidCommandException("Invalid method header.");
+            }
+
+            string methodName = headerParts[1];
+            var parameters = headerParts.Skip(2).ToList();
+            var commands = methodLines.Skip(1).TakeWhile(line => !line.Trim().Equals("endmethod")).ToList();
+
+            return new Method(methodName) { Parameters = parameters, Commands = commands };
+        }
+
+        public bool IsValidMethodCall(string command, CommandList commandList)
+        {
+            var parts = command.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length != 2 || !commandList.MethodExists(parts[0].Trim()))
+            {
+                return false;
+            }
+
+            var methodName = parts[0].Trim();
+            var methodParams = parts[1].Split(',');
+            var method = commandList.GetMethod(methodName);
+
+            // Check if the number of parameters matches
+            return methodParams.Length == method.Parameters.Count;
+        }
     }
 }

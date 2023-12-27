@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASEProject;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
@@ -12,6 +13,7 @@ public class CommandList
     private Pen pen;
     private PointF currentPosition;
     private Dictionary<string, int> userVariables;
+    private Dictionary<string, Method> methods;
 
     /// <summary>
     /// Gets or sets the fill mode for shapes. When set to true, shapes are filled; when set to false, only outlines are drawn.
@@ -28,6 +30,7 @@ public class CommandList
         pen = new Pen(Color.Black);
         currentPosition = PointF.Empty;
         userVariables = new Dictionary<string, int>();
+        methods = new Dictionary<string, Method>();
     }
 
 
@@ -345,6 +348,69 @@ public class CommandList
     public bool IsVariable(string variableName)
     {
         return userVariables.ContainsKey(variableName);
+    }
+
+    public void AddMethod(Method method)
+    {
+        methods[method.Name] = method;
+    }
+
+    public void ExecuteMethod(string methodName, List<string> parameters)
+    {
+        if (!methods.TryGetValue(methodName, out Method method))
+        {
+            throw new Exception($"Method '{methodName}' not found.");
+        }
+
+        if (parameters.Count != method.Parameters.Count)
+        {
+            throw new Exception($"Method '{methodName}' called with incorrect number of parameters.");
+        }
+
+        // Map actual parameters to method's parameters
+        Dictionary<string, string> parameterMap = new Dictionary<string, string>();
+        for (int i = 0; i < method.Parameters.Count; i++)
+        {
+            parameterMap[method.Parameters[i]] = parameters[i];
+        }
+
+        // Execute each command in the method
+        foreach (var command in method.Commands)
+        {
+            string processedCommand = ReplaceParametersInCommand(command, parameterMap);
+            ExecuteCommand(processedCommand);
+        }
+    }
+
+    private string ReplaceParametersInCommand(string command, Dictionary<string, string> parameterMap)
+    {
+        var parts = command.Split(' ');
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (parameterMap.TryGetValue(parts[i], out string replacement))
+            {
+                parts[i] = replacement;
+            }
+        }
+        return string.Join(" ", parts);
+    }
+
+    public bool MethodExists(string methodName)
+    {
+        return methods.ContainsKey(methodName);
+    }
+
+    // Add this method
+    public Method GetMethod(string methodName)
+    {
+        if (methods.TryGetValue(methodName, out Method method))
+        {
+            return method;
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Method '{methodName}' not found.");
+        }
     }
 
 }

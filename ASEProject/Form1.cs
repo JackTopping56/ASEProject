@@ -21,6 +21,8 @@ namespace ASEProject
         private CommandList commandList;
         private CommandParser commandParser;
         private Dictionary<string, ICommand> commandDictionary;
+        private List<string> currentMethodDefinition;
+        private bool isDefiningMethod = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Form1"/> class.
@@ -95,20 +97,35 @@ namespace ASEProject
 
                 try
                 {
-                    if (commandParser.IsLoopCommand(trimmedCommand))
+                    if (commandParser.IsMethodDefinition(trimmedCommand))
                     {
-                        ProcessLoopCommand(trimmedCommand);
+                        isDefiningMethod = true;
+                        currentMethodDefinition = new List<string> { trimmedCommand };
                     }
-                    else if (isInsideLoop)
+                    else if (trimmedCommand.Equals("endmethod", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Collect loop commands, including if statements
-                        loopCommands.Add(trimmedCommand);
+                        if (isDefiningMethod)
+                        {
+                            currentMethodDefinition.Add(trimmedCommand);
+                            var method = commandParser.ParseMethodDefinition(currentMethodDefinition);
+                            commandList.AddMethod(method);
+                            isDefiningMethod = false;
+                            currentMethodDefinition = null;
+                        }
+                        else
+                        {
+                            throw new CustomInvalidCommandException("Unexpected 'endmethod'");
+                        }
                     }
-                    else if (commandParser.IsConditionalCommand(trimmedCommand))
+                    else if (isDefiningMethod)
                     {
-                        ProcessConditionalCommand(trimmedCommand);
+                        currentMethodDefinition.Add(trimmedCommand);
                     }
-                    else if (ShouldExecuteCommand())
+                    else if (commandParser.IsMethodCall(trimmedCommand))
+                    {
+                        ExecuteMethodCall(trimmedCommand);
+                    }
+                    else
                     {
                         ProcessRegularCommand(trimmedCommand);
                     }
@@ -118,6 +135,15 @@ namespace ASEProject
                     MessageBox.Show($"Error processing command '{trimmedCommand}': {ex.Message}", "Command Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void ExecuteMethodCall(string command)
+        {
+            var parts = command.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
+            var methodName = parts[0].Trim();
+            var methodParams = parts[1].Split(',').Select(p => p.Trim()).ToList();
+
+            commandList.ExecuteMethod(methodName, methodParams);
         }
 
         /// <summary>
