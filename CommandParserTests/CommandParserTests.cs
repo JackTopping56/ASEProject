@@ -63,7 +63,9 @@ public class CommandParserTests
         });
     }
 
-    // Testing conditional command validation
+    /// <summary>
+    /// Tests if the CommandParser correctly identifies a valid conditional command.
+    /// </summary>
     [Fact]
     public void IsConditionalCommand_ValidIf_ReturnsTrue()
     {
@@ -73,7 +75,9 @@ public class CommandParserTests
         Assert.True(parser.IsConditionalCommand(ifCommand));
     }
 
-    // Testing loop command validation
+    /// <summary>
+    /// Tests if the CommandParser correctly identifies a valid loop command.
+    /// </summary>
     [Fact]
     public void IsLoopCommand_ValidLoop_ReturnsTrue()
     {
@@ -83,7 +87,9 @@ public class CommandParserTests
         Assert.True(parser.IsLoopCommand(loopCommand));
     }
 
-    // Testing variable declaration handling
+    /// <summary>
+    /// Tests if the CommandParser correctly identifies a valid variable declaration.
+    /// </summary>
     [Fact]
     public void IsVariableDeclaration_ValidDeclaration_ReturnsTrue()
     {
@@ -93,7 +99,9 @@ public class CommandParserTests
         Assert.True(parser.IsVariableDeclarationOrArithmetic(varDeclaration));
     }
 
-    // Testing arithmetic expression handling
+    /// <summary>
+    /// Tests if the CommandParser correctly identifies a valid arithmetic expression.
+    /// </summary>
     [Fact]
     public void IsArithmeticExpression_ValidExpression_ReturnsTrue()
     {
@@ -103,7 +111,9 @@ public class CommandParserTests
         Assert.True(parser.IsVariableDeclarationOrArithmetic(arithmeticExpression));
     }
 
-    // Testing variable replacement in commands
+    /// <summary>
+    /// Tests if the CommandParser correctly replaces variables in a command with their actual values.
+    /// </summary>
     [Fact]
     public void ReplaceVariables_WithVariables_ReplacesCorrectly()
     {
@@ -117,7 +127,9 @@ public class CommandParserTests
         Assert.Equal("moveto 20 30", replacedCommand);
     }
 
-    // Testing method definition handling
+    /// <summary>
+    /// Tests if the CommandParser correctly identifies a valid method definition.
+    /// </summary>
     [Fact]
     public void IsMethodDefinition_ValidMethodDefinition_ReturnsTrue()
     {
@@ -127,7 +139,9 @@ public class CommandParserTests
         Assert.True(parser.IsMethodDefinition(methodDefinition));
     }
 
-    // Testing method call handling
+    /// <summary>
+    /// Tests if the CommandParser correctly identifies a valid method call.
+    /// </summary>
     [Fact]
     public void IsMethodCall_ValidMethodCall_ReturnsTrue()
     {
@@ -137,7 +151,9 @@ public class CommandParserTests
         Assert.True(parser.IsMethodCall(methodCall));
     }
 
-    // Testing parsing of a complete method definition
+    /// <summary>
+    /// Tests if the CommandParser correctly parses a complete method definition.
+    /// </summary>
     [Fact]
     public void ParseMethodDefinition_ValidDefinition_ParsesCorrectly()
     {
@@ -159,6 +175,9 @@ public class CommandParserTests
         Assert.Equal(new List<string> { "moveto x y", "circle 5" }, method.Commands);
     }
 
+    /// <summary>
+    /// Tests if the CommandParser correctly validates a method call format to an existing method.
+    /// </summary>
     [Fact]
     public void IsValidMethodCall_CorrectFormatToExistingMethod_ReturnsTrue()
     {
