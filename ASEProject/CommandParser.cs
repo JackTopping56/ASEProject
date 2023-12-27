@@ -370,11 +370,21 @@ namespace ASEProject
             return parts.Length > 1; // There should be at least two parts for a valid expression
         }
 
+        /// <summary>
+        /// Determines whether a given command is a method definition.
+        /// </summary>
+        /// <param name="command">The command to check.</param>
+        /// <returns>True if the command starts with 'method'; otherwise, false.</returns>
         public bool IsMethodDefinition(string command)
         {
             return command.StartsWith("method ");
         }
 
+        /// <summary>
+        /// Determines whether a given command is a call to a defined method.
+        /// </summary>
+        /// <param name="command">The command to check.</param>
+        /// <returns>True if the command is formatted as a method call; otherwise, false.</returns>
         public bool IsMethodCall(string command)
         {
             var parts = command.Split('(');
@@ -382,12 +392,23 @@ namespace ASEProject
             return IsValidMethodName(parts[0].Trim());
         }
 
+        /// <summary>
+        /// Checks if the provided string is a valid method name.
+        /// </summary>
+        /// <param name="methodName">The method name to validate.</param>
+        /// <returns>True if the method name is not null or empty and contains only letters; otherwise, false.</returns>
         private bool IsValidMethodName(string methodName)
         {
-            // Assuming method names are similar to variable names
+           
             return !string.IsNullOrEmpty(methodName) && methodName.All(char.IsLetter);
         }
 
+        /// <summary>
+        /// Parses a list of strings representing a method definition and creates a Method object.
+        /// </summary>
+        /// <param name="methodLines">The lines of the method definition.</param>
+        /// <returns>A new Method object based on the provided definition.</returns>
+        /// <exception cref="InvalidCommandException">Thrown if the method definition is invalid.</exception>
         public Method ParseMethodDefinition(List<string> methodLines)
         {
             if (methodLines.Count == 0 || !IsMethodDefinition(methodLines[0]))
@@ -408,6 +429,12 @@ namespace ASEProject
             return new Method(methodName) { Parameters = parameters, Commands = commands };
         }
 
+        /// <summary>
+        /// Validates if a command string represents a valid method call based on existing methods.
+        /// </summary>
+        /// <param name="command">The command to validate.</param>
+        /// <param name="commandList">The command list containing defined methods.</param>
+        /// <returns>True if the command represents a valid method call; otherwise, false.</returns>
         public bool IsValidMethodCall(string command, CommandList commandList)
         {
             var parts = command.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
