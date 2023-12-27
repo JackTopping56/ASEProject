@@ -97,46 +97,20 @@ namespace ASEProject
 
                 try
                 {
-                    // Check if currently defining a method
                     if (isDefiningMethod)
                     {
-                        if (trimmedCommand.Equals("endmethod", StringComparison.OrdinalIgnoreCase))
-                        {
-                            currentMethodDefinition.Add(trimmedCommand);
-                            var method = commandParser.ParseMethodDefinition(currentMethodDefinition);
-                            commandList.AddMethod(method);
-                            isDefiningMethod = false;
-                            currentMethodDefinition = null;
-                        }
-                        else
-                        {
-                            currentMethodDefinition.Add(trimmedCommand);
-                        }
+                        // Collect method definition
+                        HandleMethodDefinition(trimmedCommand);
                     }
-                    else if (commandParser.IsMethodDefinition(trimmedCommand))
+                    else if (isInsideLoop)
                     {
-                        isDefiningMethod = true;
-                        currentMethodDefinition = new List<string> { trimmedCommand };
+                        // Collect loop commands
+                        HandleLoopCommands(trimmedCommand);
                     }
-                    // Handling loops
-                    else if (commandParser.IsLoopCommand(trimmedCommand))
-                    {
-                        ProcessLoopCommand(trimmedCommand);
-                    }
-                    // Handling conditional statements
-                    else if (commandParser.IsConditionalCommand(trimmedCommand))
-                    {
-                        ProcessConditionalCommand(trimmedCommand);
-                    }
-                    // Handling method calls
-                    else if (commandParser.IsMethodCall(trimmedCommand))
-                    {
-                        ExecuteMethodCall(trimmedCommand);
-                    }
-                    // Handling other commands including variables
                     else
                     {
-                        ProcessRegularCommand(trimmedCommand);
+                        // Determine the type of command and process accordingly
+                        ProcessCommand(trimmedCommand);
                     }
                 }
                 catch (Exception ex)
@@ -146,7 +120,71 @@ namespace ASEProject
             }
         }
 
+        private void HandleMethodDefinition(string command)
+        {
+            if (command.Equals("endmethod", StringComparison.OrdinalIgnoreCase))
+            {
+                currentMethodDefinition.Add(command);
+                var method = commandParser.ParseMethodDefinition(currentMethodDefinition);
+                commandList.AddMethod(method);
+                isDefiningMethod = false;
+                currentMethodDefinition = null;
+            }
+            else
+            {
+                currentMethodDefinition.Add(command);
+            }
+        }
 
+        private void HandleLoopCommands(string command)
+        {
+            if (command.ToLower() == "endloop")
+            {
+                ExecuteLoopCommands();
+                isInsideLoop = false;
+                loopCommands.Clear();
+            }
+            else
+            {
+                loopCommands.Add(command);
+            }
+        }
+
+        private void ExecuteLoopCommands()
+        {
+            for (int i = 0; i < loopCounter; i++)
+            {
+                foreach (var loopCommand in loopCommands)
+                {
+                    ProcessCommand(loopCommand);
+                }
+            }
+        }
+
+        private void ProcessCommand(string command)
+        {
+            if (commandParser.IsMethodDefinition(command))
+            {
+                isDefiningMethod = true;
+                currentMethodDefinition = new List<string> { command };
+            }
+            else if (commandParser.IsLoopCommand(command))
+            {
+                ProcessLoopCommand(command);
+            }
+            else if (commandParser.IsConditionalCommand(command))
+            {
+                ProcessConditionalCommand(command);
+            }
+            else if (commandParser.IsMethodCall(command))
+            {
+                ExecuteMethodCall(command);
+            }
+            else
+            {
+                ProcessRegularCommand(command);
+            }
+        }
         private void ExecuteMethodCall(string command)
         {
             var parts = command.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
